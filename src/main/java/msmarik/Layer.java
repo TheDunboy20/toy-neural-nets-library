@@ -6,12 +6,14 @@ public class Layer {
 
     private final Perceptron[] perceptrons;
     private final Activation activationFunction;
+    private final double learningRate;
 
     private double[] layerInput;
 
-    public Layer(int outputFeatureSize, Activation activationFunction) {
+    public Layer(int outputFeatureSize, Activation activationFunction, double learningRate) {
         this.perceptrons = new Perceptron[outputFeatureSize];
         this.activationFunction = activationFunction;
+        this.learningRate = learningRate;
 
         for (int i = 0; i < outputFeatureSize; i++) {
             perceptrons[i] = new Perceptron();
@@ -31,8 +33,10 @@ public class Layer {
         return output;
     }
 
-    public double updateWeights(double nextLayerGradient) {
-        return 0;
+    public double[] updateWeights(double[] errorSignal) {
+        for (int i = 0; i < perceptrons.length; i++) {
+            perceptrons.updateWeights(errorSignal);
+        }
     }
 
     private Activation getActivationFunction() {

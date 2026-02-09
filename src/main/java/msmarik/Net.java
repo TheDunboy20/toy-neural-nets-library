@@ -33,9 +33,9 @@ public class Net {
     }
 
     public void updateWeights(double[] predictedProbabilities, double[] correctLabels) {
-        double lastLayerGradient = this.lossFn.derivative(predictedProbabilities, correctLabels)[0];
+        double[] errorSignal = this.lossFn.derivative(predictedProbabilities, correctLabels);
         for (Layer layer : layers) {
-            lastLayerGradient = layer.updateWeights(lastLayerGradient);
+            errorSignal = layer.updateWeights(errorSignal);
         }
     }
 }
