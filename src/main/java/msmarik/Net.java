@@ -1,22 +1,22 @@
 package msmarik;
 
 import msmarik.losses.Loss;
-import msmarik.losses.Losses;
 
 import java.util.ArrayList;
 
 public class Net {
     private final ArrayList<Layer> layers;
     private final Loss lossFn;
+    private final double learningRate;
 
-    public Net(Loss lossFn) {
+    public Net(Loss lossFn, double learningRate) {
         layers = new ArrayList<>();
         this.lossFn = lossFn;
+        this.learningRate = learningRate;
     }
 
     public void addLayer(Layer layer) {
-        Layer previousLayer = layers.isEmpty() ? null : layers.getLast();
-        layer.setPreviousLayer(previousLayer);
+        layer.setLearningRate(learningRate);
         layers.add(layer);
     }
 
@@ -34,10 +34,15 @@ public class Net {
         return this.lossFn.standard(predictedProbabilities, correctLabels);
     }
 
-//    public void updateWeights(double[] predictedProbabilities, double[] correctLabels) {
-//        double[] errorSignal = this.lossFn.derivative(predictedProbabilities, correctLabels);
-//        for (Layer layer : layers) {
-//            errorSignal = layer.updateWeights(errorSignal);
-//        }
-//    }
+    public void backpropagate(double[] correctLabels) {
+        Layer outputLayer = layers.getLast();
+        outputLayer.backpropagateOutputLayer(correctLabels, lossFn);
+
+        for (int i = layers.size() - 2; i >= 0; i--) {
+            Layer current = layers.get(i);
+            Layer next = layers.get(i + 1);
+
+            current.backpropagateHiddenLayer(next);
+        }
+    }
 }

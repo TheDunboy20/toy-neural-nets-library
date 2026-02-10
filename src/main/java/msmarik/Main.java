@@ -14,7 +14,7 @@ public class Main {
         final Layer layer2 = new Layer(20, Activations.relu());
         final Layer layer3 = new Layer(1, Activations.linear());
 
-        final Net net = new Net(Losses.MSE());
+        final Net net = new Net(Losses.MSE(), 0.001);
         net.addLayer(layer1);
         net.addLayer(layer2);
         net.addLayer(layer3);

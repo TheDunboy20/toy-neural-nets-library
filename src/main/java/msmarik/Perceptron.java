@@ -1,13 +1,20 @@
 package msmarik;
 
-import java.util.function.DoubleUnaryOperator;
+import msmarik.activations.Activation;
 
 public class Perceptron {
     private double[] weights;
+    private final Activation activationFn;
     private double result;
-    private double[] input;
+    private double outputBeforeActivation;
+    private double errorSignal;
+    private double[] lastInput;
 
-    public double computeWeightedSum(double[] input, DoubleUnaryOperator activationFunction) {
+    public Perceptron(Activation activationFn) {
+        this.activationFn = activationFn;
+    }
+
+    public double computeWeightedSum(double[] input) {
         if (this.weights == null) {
             setPerceptronSize(input.length);
         }
@@ -15,25 +22,16 @@ public class Perceptron {
         double result = 0;
         for (int i = 0; i < input.length; i++) {
             result += input[i] * weights[i];
-            result = activationFunction.applyAsDouble(result);
         }
 
-        this.input = input;
+        this.outputBeforeActivation = result;
+
+        result = activationFn.standard().applyAsDouble(result);
+
+        this.lastInput = input;
         this.result = result;
 
         return result;
-    }
-
-    public void updateWeights(double[] errorSignal, double learningRate) {
-        // Probably one layer before the loss calculation?
-        if (errorSignal.length != input.length) {
-            for (int i = 0; i < input.length; i++) {
-                double gradient = errorSignal[0] * input[i];
-                weights[i] = weights[i] - (learningRate * gradient);
-            }
-        } else {
-
-        }
     }
 
     private void setPerceptronSize(int inputLength) {
@@ -41,6 +39,29 @@ public class Perceptron {
         for (int i = 0; i < inputLength; i++) {
             this.weights[i] = 0.0001;
         }
+    }
+
+    public void updateErrorSignal(double errorSignalFromPreviousLayer) {
+        this.errorSignal = errorSignalFromPreviousLayer
+                         * activationFn.derivative().applyAsDouble(outputBeforeActivation);
+    }
+
+    public void updateWeights(double learningRate) {
+        for (int i = 0; i < weights.length; i++) {
+            weights[i] -= learningRate * errorSignal * lastInput[i];
+        }
+    }
+
+    public double[] getWeights() {
+        return weights;
+    }
+
+    public double getErrorSignal() {
+        return errorSignal;
+    }
+
+    public double getResult() {
+        return result;
     }
 
 }
