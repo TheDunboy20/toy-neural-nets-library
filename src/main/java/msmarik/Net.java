@@ -15,6 +15,8 @@ public class Net {
     }
 
     public void addLayer(Layer layer) {
+        Layer previousLayer = layers.isEmpty() ? null : layers.getLast();
+        layer.setPreviousLayer(previousLayer);
         layers.add(layer);
     }
 
@@ -32,10 +34,10 @@ public class Net {
         return this.lossFn.standard(predictedProbabilities, correctLabels);
     }
 
-    public void updateWeights(double[] predictedProbabilities, double[] correctLabels) {
-        double[] errorSignal = this.lossFn.derivative(predictedProbabilities, correctLabels);
-        for (Layer layer : layers) {
-            errorSignal = layer.updateWeights(errorSignal);
-        }
-    }
+//    public void updateWeights(double[] predictedProbabilities, double[] correctLabels) {
+//        double[] errorSignal = this.lossFn.derivative(predictedProbabilities, correctLabels);
+//        for (Layer layer : layers) {
+//            errorSignal = layer.updateWeights(errorSignal);
+//        }
+//    }
 }

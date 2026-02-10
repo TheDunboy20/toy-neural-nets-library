@@ -6,14 +6,13 @@ public class Layer {
 
     private final Perceptron[] perceptrons;
     private final Activation activationFunction;
-    private final double learningRate;
 
+    private Layer previousLayer;
     private double[] layerInput;
 
-    public Layer(int outputFeatureSize, Activation activationFunction, double learningRate) {
+    public Layer(int outputFeatureSize, Activation activationFunction) {
         this.perceptrons = new Perceptron[outputFeatureSize];
         this.activationFunction = activationFunction;
-        this.learningRate = learningRate;
 
         for (int i = 0; i < outputFeatureSize; i++) {
             perceptrons[i] = new Perceptron();
@@ -33,10 +32,14 @@ public class Layer {
         return output;
     }
 
-    public double[] updateWeights(double[] errorSignal) {
-        for (int i = 0; i < perceptrons.length; i++) {
-            perceptrons.updateWeights(errorSignal);
-        }
+//    public double[] updateWeights(double[] errorSignal) {
+//        for (int i = 0; i < perceptrons.length; i++) {
+//            perceptrons.updateWeights(errorSignal);
+//        }
+//    }
+
+    public void setPreviousLayer(Layer previousLayer) {
+        this.previousLayer = previousLayer;
     }
 
     private Activation getActivationFunction() {
