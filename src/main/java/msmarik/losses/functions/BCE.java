@@ -20,15 +20,10 @@ public record BCE() implements Loss {
     }
 
     @Override
-    public double[] derivative(double[] predictedProbabilities, double[] correctLabels) {
-        validateSizes(predictedProbabilities, correctLabels);
+    public double derivative(double predictedProbability, double correctLabel) {
+        double eps = 1e-15;
+        predictedProbability = Math.max(eps, Math.min(1 - eps, predictedProbability));
 
-        double[] resultGradients = new double[predictedProbabilities.length];
-        for (int i = 0; i < predictedProbabilities.length; i++) {
-            double resultGradient = ((predictedProbabilities[i] - correctLabels[i])
-                                    /(predictedProbabilities[i] * (1 - predictedProbabilities[i])));
-            resultGradients[i] = resultGradient;
-        }
-        return resultGradients;
+        return (1 - correctLabel) / (1 - predictedProbability) - correctLabel / predictedProbability;
     }
 }

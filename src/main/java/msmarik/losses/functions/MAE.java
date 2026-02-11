@@ -17,14 +17,11 @@ public record MAE() implements Loss {
     }
 
     @Override
-    public double[] derivative(double[] predictedProbabilities, double[] correctLabels) {
-        validateSizes(predictedProbabilities, correctLabels);
-        double[] resultGradients = new double[predictedProbabilities.length];
-        for (int i = 0; i < predictedProbabilities.length; i++) {
-            double resultGradient = ((double) 1 / predictedProbabilities.length)
-                                    * Math.signum(predictedProbabilities[i] - correctLabels[i]);
-            resultGradients[i] = resultGradient;
-        }
-        return resultGradients;
+    public double derivative(double predictedProbability, double correctLabel) {
+        double diff = predictedProbability - correctLabel;
+
+        if (diff > 0) return 1;
+        if (diff < 0) return -1;
+        return 0;
     }
 }

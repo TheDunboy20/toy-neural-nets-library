@@ -1,24 +1,39 @@
 package msmarik;
 
 import msmarik.activations.Activation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Perceptron {
+    private static final Logger log = LoggerFactory.getLogger(Perceptron.class);
     private double[] weights;
-    private double bias;
+    private Double bias;
     private final Activation activationFn;
     private double result;
     private double outputBeforeActivation;
     private double errorSignal;
     private double[] lastInput;
+    private final String name;
 
-    public Perceptron(Activation activationFn) {
+    public Perceptron(Activation activationFn, String name) {
         this.activationFn = activationFn;
-        this.bias = initializeBias();
+        this.name = name;
+    }
+
+    public Perceptron(Activation activationFn, double[] weights, double bias, String name) {
+        this.activationFn = activationFn;
+        this.weights = weights;
+        this.bias = bias;
+        this.name = name;
     }
 
     public double computeWeightedSum(double[] input) {
         if (this.weights == null) {
             setPerceptronSize(input.length);
+        }
+
+        if (this.bias == null) {
+            this.bias = initializeBias();
         }
 
         double result = 0;
@@ -29,6 +44,9 @@ public class Perceptron {
 
         this.outputBeforeActivation = result;
         result = activationFn.standard().applyAsDouble(result);
+
+        log.debug("[{}] Output after activation: {}", this.name, result);
+
         this.lastInput = input;
         this.result = result;
 
@@ -43,13 +61,20 @@ public class Perceptron {
     }
 
     public void updateErrorSignal(double errorSignalFromPreviousLayer) {
+        log.info("[{}] Error signal passed from previous layer: {}", this.name, errorSignalFromPreviousLayer);
         this.errorSignal = errorSignalFromPreviousLayer
                          * activationFn.derivative().applyAsDouble(outputBeforeActivation);
+        log.info("[{}] Error signal updated to: {}", this.name, errorSignal);
     }
 
     public void updateWeights(double learningRate) {
         for (int i = 0; i < weights.length; i++) {
+            log.info("{} Weight[{}] update parameters: LR={}, ErrorSignal={}, LastInput={},", this.name, i,
+                    learningRate,
+                    errorSignal,
+                    lastInput[i]);
             weights[i] -= learningRate * errorSignal * lastInput[i];
+            log.info("[{}] Updating weight[{}]. To: {} ", this.name, i, weights[i]);
         }
     }
 

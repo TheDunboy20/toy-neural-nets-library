@@ -9,6 +9,8 @@ public class Net {
     private final Loss lossFn;
     private final double learningRate;
 
+    private int layerIndex;
+
     public Net(Loss lossFn, double learningRate) {
         layers = new ArrayList<>();
         this.lossFn = lossFn;
@@ -17,7 +19,14 @@ public class Net {
 
     public void addLayer(Layer layer) {
         layer.setLearningRate(learningRate);
+        layer.setLayerName("Layer-" + layerIndex++);
         layers.add(layer);
+    }
+
+    public void addLayers(Layer... layersToAdd) {
+        for (Layer layer: layersToAdd) {
+            addLayer(layer);
+        }
     }
 
     public double[] forward(double[] input) {
@@ -34,7 +43,7 @@ public class Net {
         return this.lossFn.standard(predictedProbabilities, correctLabels);
     }
 
-    public void backpropagate(double[] correctLabels) {
+    public void backpropagate(double correctLabels) {
         Layer outputLayer = layers.getLast();
         outputLayer.backpropagateOutputLayer(correctLabels, lossFn);
 

@@ -6,13 +6,21 @@ import msmarik.losses.Loss;
 public class Layer {
     private final Perceptron[] perceptrons;
     private double learningRate;
+    private String name;
 
     public Layer(int outputFeatureSize, Activation activationFn) {
         this.perceptrons = new Perceptron[outputFeatureSize];
 
         for (int i = 0; i < outputFeatureSize; i++) {
-            perceptrons[i] = new Perceptron(activationFn);
+            perceptrons[i] = new Perceptron(activationFn, name + "-" + i);
         }
+    }
+
+    /*
+    * For testing purposes only
+    * */
+    public Layer(Perceptron[] perceptrons) {
+        this.perceptrons = perceptrons;
     }
 
     public double[] forward(double[] input) {
@@ -30,15 +38,12 @@ public class Layer {
         this.learningRate = lr;
     }
 
-    public void backpropagateOutputLayer(double[] target, Loss lossFn) {
-        for (int i = 0; i < perceptrons.length; i++) {
-            Perceptron currentPerceptron = perceptrons[i];
-            // Artificially wrapping in an array, to support batch functionality in the future.
-            double[] targets = {target[i]};
-            double[] predictedProbabilities = {currentPerceptron.getResult()};
+    public void backpropagateOutputLayer(double target, Loss lossFn) {
+        for (Perceptron currentPerceptron : perceptrons) {
+            double predictedProbability = currentPerceptron.getResult();
+            double error = lossFn.derivative(predictedProbability, target);
 
-            double[] error = lossFn.derivative(predictedProbabilities, targets);
-            currentPerceptron.updateErrorSignal(error[0]);
+            currentPerceptron.updateErrorSignal(error);
             currentPerceptron.updateWeights(this.learningRate);
             currentPerceptron.updateBias(this.learningRate);
         }
@@ -57,5 +62,9 @@ public class Layer {
             currentPerceptron.updateWeights(this.learningRate);
             currentPerceptron.updateBias(this.learningRate);
         }
+    }
+
+    public void setLayerName(String name) {
+        this.name = name;
     }
 }
