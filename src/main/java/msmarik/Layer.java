@@ -40,6 +40,7 @@ public class Layer {
             double[] error = lossFn.derivative(predictedProbabilities, targets);
             currentPerceptron.updateErrorSignal(error[0]);
             currentPerceptron.updateWeights(this.learningRate);
+            currentPerceptron.updateBias(this.learningRate);
         }
     }
 
@@ -54,6 +55,7 @@ public class Layer {
             }
             currentPerceptron.updateErrorSignal(errorFromPreviousLayer);
             currentPerceptron.updateWeights(this.learningRate);
+            currentPerceptron.updateBias(this.learningRate);
         }
     }
 }

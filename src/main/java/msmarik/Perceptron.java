@@ -4,6 +4,7 @@ import msmarik.activations.Activation;
 
 public class Perceptron {
     private double[] weights;
+    private double bias;
     private final Activation activationFn;
     private double result;
     private double outputBeforeActivation;
@@ -12,6 +13,7 @@ public class Perceptron {
 
     public Perceptron(Activation activationFn) {
         this.activationFn = activationFn;
+        this.bias = initializeBias();
     }
 
     public double computeWeightedSum(double[] input) {
@@ -23,11 +25,10 @@ public class Perceptron {
         for (int i = 0; i < input.length; i++) {
             result += input[i] * weights[i];
         }
+        result += bias;
 
         this.outputBeforeActivation = result;
-
         result = activationFn.standard().applyAsDouble(result);
-
         this.lastInput = input;
         this.result = result;
 
@@ -63,5 +64,14 @@ public class Perceptron {
     public double getResult() {
         return result;
     }
+
+    public void updateBias(double learningRate) {
+        this.bias -= learningRate * errorSignal;
+    }
+
+    private double initializeBias() {
+        return Math.random() - 0.5;
+    }
+
 
 }
