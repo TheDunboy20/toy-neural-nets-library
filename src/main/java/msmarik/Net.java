@@ -3,6 +3,7 @@ package msmarik;
 import msmarik.losses.Loss;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Net {
     private final ArrayList<Layer> layers;
@@ -28,6 +29,14 @@ public class Net {
             addLayer(layer);
         }
     }
+
+    public List<Layer> getLayers() {
+        return this.layers;
+    }
+
+    public Layer getLayer(int index) {
+        return this.layers.get(index);
+    };
 
     public double[] forward(double[] input) {
         double[] result = input.clone();

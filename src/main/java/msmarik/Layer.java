@@ -23,6 +23,10 @@ public class Layer {
         this.perceptrons = perceptrons;
     }
 
+    public Perceptron[] getPerceptrons() {
+        return perceptrons;
+    }
+
     public double[] forward(double[] input) {
         double[] output = new double[perceptrons.length];
 
