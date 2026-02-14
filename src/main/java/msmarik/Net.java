@@ -54,4 +54,10 @@ public class Net {
             current.backpropagateHiddenLayer(next);
         }
     }
+
+    public void updateWeightsAndBiases(double learningRate) {
+        for (Layer layer : layers) {
+            layer.updateWeightsAndBiases();
+        }
+    }
 }

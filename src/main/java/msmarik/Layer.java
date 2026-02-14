@@ -44,8 +44,6 @@ public class Layer {
             double error = lossFn.derivative(predictedProbability, target);
 
             currentPerceptron.updateErrorSignal(error);
-            currentPerceptron.updateWeights(this.learningRate);
-            currentPerceptron.updateBias(this.learningRate);
         }
     }
 
@@ -59,8 +57,13 @@ public class Layer {
                 errorFromPreviousLayer += nextPerceptron.getWeights()[i] * nextPerceptron.getErrorSignal();
             }
             currentPerceptron.updateErrorSignal(errorFromPreviousLayer);
-            currentPerceptron.updateWeights(this.learningRate);
-            currentPerceptron.updateBias(this.learningRate);
+        }
+    }
+
+    public void updateWeightsAndBiases() {
+        for (Perceptron perceptron: perceptrons) {
+            perceptron.updateWeights(this.learningRate);
+            perceptron.updateBias(this.learningRate);
         }
     }
 

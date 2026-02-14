@@ -5,35 +5,50 @@ import msmarik.activations.Activations;
 import msmarik.losses.Losses;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ForwardPassTest {
     @Test
     public void testForwardPass() {
-        final Net net = new Net(Losses.MSE(), 1);
+        Net net = new Net(Losses.MSE(), 1);
 
-        // Hidden Layer 1
-        Perceptron h1 = new Perceptron(Activations.linear(), new double[]{0.1, 0.2}, 0, "Layer-1-Perceptron-1");
-        Perceptron h2 = new Perceptron(Activations.linear(), new double[]{0.3, 0.4}, 0, "Layer-1-Perceptron-2");
-        Layer hl1 = new Layer(new Perceptron[]{h1, h2});
+        // ===== Layer 1 =====
+        Perceptron h1 = new Perceptron(Activations.linear(), new double[]{0.1, 0.2}, 0, "h1");
+        Perceptron h2 = new Perceptron(Activations.linear(), new double[]{0.3, 0.4}, 0, "h2");
+        Layer l1 = new Layer(new Perceptron[]{h1, h2});
 
-        // Hidden Layer 2
-        Perceptron h3 = new Perceptron(Activations.linear(), new double[]{0.5, 0.6}, 0, "Layer-2-Perceptron-1");
-        Perceptron h4 = new Perceptron(Activations.linear(), new double[]{0.7, 0.8}, 0, "Layer-2-Perceptron-2");
-        Layer hl2 = new Layer(new Perceptron[]{h3, h4});
+        // ===== Layer 2 =====
+        Perceptron h3 = new Perceptron(Activations.linear(), new double[]{0.5, 0.6}, 0, "h3");
+        Perceptron h4 = new Perceptron(Activations.linear(), new double[]{0.7, 0.8}, 0, "h4");
+        Layer l2 = new Layer(new Perceptron[]{h3, h4});
 
-        // Output Layer
-        Perceptron h5 = new Perceptron(Activations.linear(), new double[]{0.9, 1.0}, 0, "Layer-3-Perceptron-1");
-        Layer hl3 = new Layer(new Perceptron[]{h5});
-        net.addLayers(hl1, hl2, hl3);
+        // ===== Output layer =====
+        Perceptron h5 = new Perceptron(Activations.linear(), new double[]{0.9, 1.0}, 0, "h5");
+        Layer l3 = new Layer(new Perceptron[]{h5});
 
-        double correctLabel = 1;
+        net.addLayers(l1, l2, l3);
 
-        double[] netOutput = net.forward(new double[]{1 , 2});
-        double netLoss = net.calculateLoss(netOutput, new double[]{correctLabel});
-        net.backpropagate(correctLabel);
+        double[] input = {1, 2};
 
-        assert Arrays.equals(netOutput, new double[]{2.049});
-        assert netLoss == 1.100401;
+        // ---- forward manually layer by layer ----
+        double[] out1 = l1.forward(input);
+        double[] out2 = l2.forward(out1);
+        double[] out3 = l3.forward(out2);
+
+        // ===== assertions =====
+
+        // layer 1
+        assertEquals(0.5, out1[0], 1e-9);
+        assertEquals(1.1, out1[1], 1e-9);
+
+        // layer 2
+        assertEquals(0.91, out2[0], 1e-9);
+        assertEquals(1.23, out2[1], 1e-9);
+
+        // final output
+        assertEquals(2.049, out3[0], 1e-9);
+
+        double loss = net.calculateLoss(out3, new double[]{1});
+        assertEquals(1.100401, loss, 1e-9);
     }
 }
