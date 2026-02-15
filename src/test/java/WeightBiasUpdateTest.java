@@ -3,6 +3,8 @@ import msmarik.Net;
 import msmarik.Perceptron;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WeightBiasUpdateTest implements FixedNNTest{
@@ -36,6 +38,31 @@ public class WeightBiasUpdateTest implements FixedNNTest{
                 {0.2971887, 0.394377}    // h2
         };
         checkHiddenLayerWeights(net.getLayer(0), expectedWeightsL1);
+    }
+
+    @Test
+    void sequentialUpdatesCumulative() {
+        Net net = buildFixedNet();
+        double[] input = {1, 2};
+        double target = 1.0;
+
+        net.forward(input);
+        net.backpropagate(target);
+
+        Layer l3 = net.getLayer(2);
+
+        net.updateWeightsAndBiases(0.001);
+        System.out.println("perceptrom weights after first update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
+        net.updateWeightsAndBiases(0.001);
+        System.out.println("perceptrom weights after second update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
+
+        verifyPerceptronWeights(l3.getPerceptrons()[0].getWeights(), new double[]{0.8961816, 0.99483895});
+    }
+
+    private void verifyPerceptronWeights(double[] actualWeights, double[] expectedWeights) {
+        for (int i = 0; i < actualWeights.length; i++) {
+            assertEquals(expectedWeights[i], actualWeights[i], 1e-4);
+        }
     }
 
     private void checkHiddenLayerWeights(Layer hiddenLayer, double[][] expectedWeights) {
