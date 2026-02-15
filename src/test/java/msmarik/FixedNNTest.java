@@ -1,12 +1,11 @@
-import msmarik.Layer;
-import msmarik.Net;
-import msmarik.Perceptron;
+package msmarik;
+
 import msmarik.activations.Activations;
 import msmarik.losses.Losses;
 
 public interface FixedNNTest {
     default Net buildFixedNet() {
-        Net net = new Net(Losses.MSE(), 1);
+        Net net = new Net(Losses.MSE());
 
         // Layer 1
         Perceptron h1 = new Perceptron(Activations.linear(), new double[]{0.1, 0.2}, 0, "h1");

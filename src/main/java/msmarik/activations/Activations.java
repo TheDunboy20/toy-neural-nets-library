@@ -3,8 +3,7 @@ package msmarik.activations;
 import msmarik.activations.functions.Linear;
 import msmarik.activations.functions.Relu;
 import msmarik.activations.functions.Sigmoid;
-
-import java.util.function.DoubleUnaryOperator;
+import msmarik.activations.functions.Tanh;
 
 public class Activations {
     public static Activation relu() {
@@ -19,10 +18,7 @@ public class Activations {
         return new Sigmoid();
     }
 
-
-    // TODO: Refactor this to use the same pattern as functions above
-    public static DoubleUnaryOperator tanh() {
-        return x -> 2 / ((1 + Math.exp(-2*x) -1));
+    public static Activation tanh() {
+        return new Tanh();
     }
-
 }

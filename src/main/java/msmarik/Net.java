@@ -8,18 +8,15 @@ import java.util.List;
 public class Net {
     private final ArrayList<Layer> layers;
     private final Loss lossFn;
-    private final double learningRate;
 
     private int layerIndex;
 
-    public Net(Loss lossFn, double learningRate) {
+    public Net(Loss lossFn) {
         layers = new ArrayList<>();
         this.lossFn = lossFn;
-        this.learningRate = learningRate;
     }
 
     public void addLayer(Layer layer) {
-        layer.setLearningRate(learningRate);
         layer.setLayerName("Layer-" + layerIndex++);
         layers.add(layer);
     }

@@ -4,7 +4,7 @@ import msmarik.activations.Activation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Perceptron {
+class Perceptron {
     private static final Logger log = LoggerFactory.getLogger(Perceptron.class);
     private double[] weights;
     private Double bias;

@@ -5,7 +5,6 @@ import msmarik.losses.Loss;
 
 public class Layer {
     private final Perceptron[] perceptrons;
-    private double learningRate; // TODO: Consider removing this
     private String name;
 
     public Layer(int outputFeatureSize, Activation activationFn) {
@@ -38,9 +37,6 @@ public class Layer {
         return output;
     }
 
-    public void setLearningRate(double lr) {
-        this.learningRate = lr;
-    }
 
     public void backpropagateOutputLayer(double target, Loss lossFn) {
         for (Perceptron currentPerceptron : perceptrons) {

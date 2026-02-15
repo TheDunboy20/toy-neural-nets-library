@@ -1,6 +1,5 @@
-import msmarik.Layer;
-import msmarik.Net;
-import msmarik.Perceptron;
+package msmarik;
+
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
