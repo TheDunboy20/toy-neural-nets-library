@@ -36,7 +36,7 @@ public class Net {
 
     public Layer getLayer(int index) {
         return this.layers.get(index);
-    };
+    }
 
     public double[] forward(double[] input) {
         double[] result = input.clone();
@@ -66,7 +66,7 @@ public class Net {
 
     public void updateWeightsAndBiases(double learningRate) {
         for (Layer layer : layers) {
-            layer.updateWeightsAndBiases();
+            layer.updateWeightsAndBiases(learningRate);
         }
     }
 }

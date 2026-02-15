@@ -98,6 +98,10 @@ public class Perceptron {
         this.bias -= learningRate * errorSignal;
     }
 
+    public double getBias() {
+        return this.bias;
+    }
+
     private double initializeBias() {
         return Math.random() - 0.5;
     }

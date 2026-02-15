@@ -5,7 +5,7 @@ import msmarik.losses.Loss;
 
 public class Layer {
     private final Perceptron[] perceptrons;
-    private double learningRate;
+    private double learningRate; // TODO: Consider removing this
     private String name;
 
     public Layer(int outputFeatureSize, Activation activationFn) {
@@ -64,10 +64,10 @@ public class Layer {
         }
     }
 
-    public void updateWeightsAndBiases() {
+    public void updateWeightsAndBiases(double learningRate) {
         for (Perceptron perceptron: perceptrons) {
-            perceptron.updateWeights(this.learningRate);
-            perceptron.updateBias(this.learningRate);
+            perceptron.updateWeights(learningRate);
+            perceptron.updateBias(learningRate);
         }
     }
 
