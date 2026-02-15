@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WeightBiasUpdateTest implements FixedNNTest{
@@ -57,6 +58,21 @@ public class WeightBiasUpdateTest implements FixedNNTest{
         System.out.println("perceptrom weights after second update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
 
         verifyPerceptronWeights(l3.getPerceptrons()[0].getWeights(), new double[]{0.8961816, 0.99483895});
+    }
+
+    @Test
+    void forwardOutputArrayNotMutatedByUpdate() {
+        Net net = buildFixedNet();
+        double[] input = {1, 2};
+
+        double[] outputBefore = net.forward(input);
+        double[] snapshot = outputBefore.clone();
+
+        net.backpropagate(1.0);
+        net.updateWeightsAndBiases(1.0);
+
+        // original returned array must stay same
+        assertArrayEquals(snapshot, outputBefore, 1e-12);
     }
 
     private void verifyPerceptronWeights(double[] actualWeights, double[] expectedWeights) {
