@@ -1,5 +1,6 @@
 import msmarik.Layer;
 import msmarik.Net;
+import msmarik.Perceptron;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -12,15 +13,12 @@ public class BackpropagationTest implements FixedNNTest{
         Net net = buildFixedNet();
         double[] input = {1, 2};
 
-        // Capture forward outputs
         double[] outputBefore = net.forward(input).clone();
 
-        // Run backpropagation
         net.backpropagate(1.0);
 
         double[] outputAfter = net.forward(input).clone();
 
-        // Ensure forward outputs did not change
         assertArrayEquals(outputBefore, outputAfter, 1e-12);
     }
 
@@ -30,13 +28,10 @@ public class BackpropagationTest implements FixedNNTest{
         double[] input = {1, 2};
         double target = 1.0;
 
-        // Forward pass
         net.forward(input);
 
-        // Backpropagation
         net.backpropagate(target);
 
-        // Capture actual error signals
         Layer l1 = net.getLayer(0);
         Layer l2 = net.getLayer(1);
         Layer l3 = net.getLayer(2);
@@ -53,7 +48,6 @@ public class BackpropagationTest implements FixedNNTest{
         for (int i = 0; i < l3Error.length; i++)
             l3Error[i] = l3.getPerceptrons()[i].getErrorSignal();
 
-        // === Assertions ===
         double[] expectedL1 = {2.4127, 2.8113};
         double[] expectedL2 = {1.8882, 2.098};
         double[] expectedL3 = {2.098};
@@ -67,4 +61,56 @@ public class BackpropagationTest implements FixedNNTest{
         for (int i = 0; i < expectedL3.length; i++)
             assertEquals(expectedL3[i], l3Error[i], 1e-4);
     }
+
+    @Test
+    void weightGradients() {
+        Net net = buildFixedNet();
+        double[] input = {1, 2};
+        double target = 1.0;
+
+        net.forward(input);
+        net.backpropagate(target);
+
+        Layer l1 = net.getLayer(0);
+        Layer l2 = net.getLayer(1);
+        Layer l3 = net.getLayer(2);
+
+        this.gradientTestOutPutLayer(l3, new double[]{1.9092, 2.5805});
+        this.testGradientHiddenLayer(l2, new double[][]{{0.9441, 2.0770}, {1.0490, 2.3078}});
+        this.testGradientHiddenLayer(l1, new double[][]{{2.4127, 4.8254}, {2.8113, 5.6226}});
+    }
+
+    private void gradientTestOutPutLayer(Layer l3, double[] expectedGradients) {
+        Perceptron outNeuron = l3.getPerceptrons()[0];
+        double[] lastInput3 = outNeuron.getLastInput();
+        double[] grad3 = new double[lastInput3.length];
+        for (int i = 0; i < grad3.length; i++)
+            grad3[i] = outNeuron.getErrorSignal() * lastInput3[i];
+
+        for (int i = 0; i < grad3.length; i++)
+            assertEquals(expectedGradients[i], grad3[i], 1e-4);
+    }
+
+    private void testGradientHiddenLayer(Layer hiddenLayer, double[][] expectedGradients) {
+        Perceptron[] hiddenLayerPerceptrons = hiddenLayer.getPerceptrons();
+        int perceptronInputLength = hiddenLayerPerceptrons[0].getLastInput().length;
+        double[][] hiddenLayerGradients = new double[perceptronInputLength][perceptronInputLength];
+
+        int perceptronIndex = 0;
+        for (Perceptron perceptron : hiddenLayerPerceptrons) {
+            double[] lastInput2 = perceptron.getLastInput();
+            double[] perceptronGradient = new double[perceptronInputLength];
+
+            for (int i = 0; i < perceptronGradient.length; i++) {
+                double grad = perceptron.getErrorSignal() * lastInput2[i];
+               hiddenLayerGradients[perceptronIndex][i] = grad;
+            }
+            perceptronIndex++;
+        }
+
+        for (int i = 0; i < expectedGradients.length; i++) {
+            assertArrayEquals(expectedGradients[i], hiddenLayerGradients[i], 1e-4);
+        }
+    }
+
 }

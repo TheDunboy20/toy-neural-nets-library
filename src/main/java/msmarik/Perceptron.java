@@ -90,6 +90,10 @@ public class Perceptron {
         return result;
     }
 
+    public double[] getLastInput() {
+        return lastInput;
+    }
+
     public void updateBias(double learningRate) {
         this.bias -= learningRate * errorSignal;
     }
