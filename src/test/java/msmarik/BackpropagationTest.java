@@ -14,7 +14,7 @@ public class BackpropagationTest implements FixedNNTest{
 
         double[] outputBefore = net.forward(input).clone();
 
-        net.backpropagate(1.0);
+        net.backpropagate(new double[] {1.0});
 
         double[] outputAfter = net.forward(input).clone();
 
@@ -29,7 +29,7 @@ public class BackpropagationTest implements FixedNNTest{
 
         net.forward(input);
 
-        net.backpropagate(target);
+        net.backpropagate(new double[] {target});
 
         Layer l1 = net.getLayer(0);
         Layer l2 = net.getLayer(1);
@@ -68,7 +68,7 @@ public class BackpropagationTest implements FixedNNTest{
         double target = 1.0;
 
         net.forward(input);
-        net.backpropagate(target);
+        net.backpropagate(new double[] {target});
 
         Layer l1 = net.getLayer(0);
         Layer l2 = net.getLayer(1);
@@ -112,4 +112,24 @@ public class BackpropagationTest implements FixedNNTest{
         }
     }
 
+    @Test
+    void multiLabelOutputLayerBackprop() {
+        Net net = new Net(msmarik.losses.Losses.MSE());
+
+        Perceptron out1 = new Perceptron(msmarik.activations.Activations.linear(), new double[]{0.5}, 0, "out1");
+        Perceptron out2 = new Perceptron(msmarik.activations.Activations.linear(), new double[]{0.5}, 0, "out2");
+        Layer outputLayer = new Layer(new Perceptron[]{out1, out2});
+
+        net.addLayers(outputLayer);
+
+        double[] input = {1.0};
+        net.forward(input);
+
+        double[] target = {1.0, 0.0};
+
+        net.backpropagate(target);
+
+        assertEquals(-1.0, out1.getErrorSignal(), 1e-4);
+        assertEquals(1.0, out2.getErrorSignal(), 1e-4);
+    }
 }
