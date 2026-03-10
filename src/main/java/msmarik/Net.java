@@ -49,8 +49,8 @@ public class Net {
         return this.lossFn.standard(predictedProbabilities, correctLabels);
     }
 
-    public void backpropagate(double correctLabels) {
-        Layer outputLayer = layers.getLast();
+    public void backpropagate(double[] correctLabels) {
+        Layer outputLayer = layers.get(layers.size() - 1);
         outputLayer.backpropagateOutputLayer(correctLabels, lossFn);
 
         for (int i = layers.size() - 2; i >= 0; i--) {

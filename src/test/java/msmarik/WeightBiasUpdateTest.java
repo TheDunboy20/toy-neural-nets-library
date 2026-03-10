@@ -16,7 +16,7 @@ public class WeightBiasUpdateTest implements FixedNNTest{
         double target = 1.0;
 
         net.forward(input);
-        net.backpropagate(target);
+        net.backpropagate(new double[] {target});
         net.updateWeightsAndBiases(0.001);
 
         // output layer
@@ -47,14 +47,14 @@ public class WeightBiasUpdateTest implements FixedNNTest{
         double target = 1.0;
 
         net.forward(input);
-        net.backpropagate(target);
+        net.backpropagate(new double[] {target});
 
         Layer l3 = net.getLayer(2);
 
         net.updateWeightsAndBiases(0.001);
-        System.out.println("perceptrom weights after first update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
+        System.out.println("perceptron weights after first update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
         net.updateWeightsAndBiases(0.001);
-        System.out.println("perceptrom weights after second update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
+        System.out.println("perceptron weights after second update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
 
         verifyPerceptronWeights(l3.getPerceptrons()[0].getWeights(), new double[]{0.8961816, 0.99483895});
     }
@@ -67,7 +67,7 @@ public class WeightBiasUpdateTest implements FixedNNTest{
         double[] outputBefore = net.forward(input);
         double[] snapshot = outputBefore.clone();
 
-        net.backpropagate(1.0);
+        net.backpropagate(new double[] {1.0});
         net.updateWeightsAndBiases(1.0);
 
         // original returned array must stay same
