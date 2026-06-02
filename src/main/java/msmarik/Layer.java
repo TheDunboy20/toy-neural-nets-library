@@ -11,7 +11,7 @@ public class Layer {
         this.perceptrons = new Perceptron[outputFeatureSize];
 
         for (int i = 0; i < outputFeatureSize; i++) {
-            perceptrons[i] = new Perceptron(activationFn, name + "-" + i);
+            perceptrons[i] = new Perceptron(activationFn);
         }
     }
 
@@ -71,5 +71,9 @@ public class Layer {
 
     public void setLayerName(String name) {
         this.name = name;
+
+        for (int i = 0; i < perceptrons.length; i++){
+            perceptrons[i].setName(name + " - " + i);
+        }
     }
 }

@@ -52,9 +52,9 @@ public class WeightBiasUpdateTest implements FixedNNTest{
         Layer l3 = net.getLayer(2);
 
         net.updateWeightsAndBiases(0.001);
-        System.out.println("perceptron weights after first update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
+        System.out.println("Perceptron weights after first update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
         net.updateWeightsAndBiases(0.001);
-        System.out.println("perceptron weights after second update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
+        System.out.println("Perceptron weights after second update" + Arrays.toString(l3.getPerceptrons()[0].getWeights()));
 
         verifyPerceptronWeights(l3.getPerceptrons()[0].getWeights(), new double[]{0.8961816, 0.99483895});
     }
