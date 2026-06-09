@@ -8,22 +8,37 @@ import java.util.List;
 public class Net {
     private final ArrayList<Layer> layers;
     private final Loss lossFn;
+    private final WeightInitializer weightInitializer;
 
-    private int layerIndex;
-
-    public Net(Loss lossFn) {
-        layers = new ArrayList<>();
-        this.lossFn = lossFn;
+    Net(Builder builder) {
+        this.layers = builder.layers;
+        this.lossFn = builder.lossFn;
+        this.weightInitializer = builder.weightInitializer;
+        initializeNet();
     }
 
-    public void addLayer(Layer layer) {
-        layer.setLayerName("Layer-" + layerIndex++);
-        layers.add(layer);
-    }
+    public static class Builder {
+        private final ArrayList<Layer> layers = new ArrayList<>();
+        private Loss lossFn;
+        private WeightInitializer weightInitializer;
 
-    public void addLayers(Layer... layersToAdd) {
-        for (Layer layer: layersToAdd) {
-            addLayer(layer);
+        public Builder addLayer(Layer layer) {
+            layers.add(layer);
+            return this;
+        }
+
+        public Builder lossFn(Loss lossFn) {
+            this.lossFn = lossFn;
+            return this;
+        }
+
+        public Builder weightInitializer(WeightInitializer weightInitializer) {
+            this.weightInitializer = weightInitializer;
+            return this;
+        }
+
+        public Net build() {
+            return new Net(this);
         }
     }
 
@@ -50,7 +65,7 @@ public class Net {
     }
 
     public void backpropagate(double[] correctLabels) {
-        Layer outputLayer = layers.get(layers.size() - 1);
+        Layer outputLayer = layers.getLast();
         outputLayer.backpropagateOutputLayer(correctLabels, lossFn);
 
         for (int i = layers.size() - 2; i >= 0; i--) {
@@ -64,6 +79,14 @@ public class Net {
     public void updateWeightsAndBiases(double learningRate) {
         for (Layer layer : layers) {
             layer.updateWeightsAndBiases(learningRate);
+        }
+    }
+
+    private void initializeNet() {
+        for (int i = 0; i < layers.size(); i++) {
+            Layer layer = layers.get(i);
+            layer.initializeLayer(weightInitializer);
+            layer.setLayerName("Layer-" + i); // TODO: Refactor this to pass layerIndex inside
         }
     }
 }

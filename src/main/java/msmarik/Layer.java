@@ -4,22 +4,32 @@ import msmarik.activations.Activation;
 import msmarik.losses.Loss;
 
 public class Layer {
-    private final Perceptron[] perceptrons;
+    private int weightsNumber;
+    private int perceptronsNumber;
+    private final Activation activationFn;
     private String name;
+    private Perceptron[] perceptrons;
 
-    public Layer(int outputFeatureSize, Activation activationFn) {
-        this.perceptrons = new Perceptron[outputFeatureSize];
-
-        for (int i = 0; i < outputFeatureSize; i++) {
-            perceptrons[i] = new Perceptron(activationFn);
-        }
+    public Layer(int weightsNumber, int perceptronsNumber, Activation activationFn) {
+        this.weightsNumber = weightsNumber;
+        this.perceptronsNumber = perceptronsNumber;
+        this.activationFn = activationFn;
     }
 
     /*
     * For testing purposes only
     * */
-    public Layer(Perceptron[] perceptrons) {
+    public Layer(Perceptron[] perceptrons, Activation activationFn) {
         this.perceptrons = perceptrons;
+        this.activationFn = activationFn;
+    }
+
+    public void initializeLayer(WeightInitializer weightInitializer) {
+        this.perceptrons = new Perceptron[perceptronsNumber];
+        for (int i = 0; i < perceptrons.length; i++) {
+            Perceptron p = new Perceptron(weightsNumber, perceptronsNumber, activationFn, weightInitializer);
+            perceptrons[i] = p;
+        }
     }
 
     public Perceptron[] getPerceptrons() {
@@ -75,5 +85,9 @@ public class Layer {
         for (int i = 0; i < perceptrons.length; i++){
             perceptrons[i].setName(name + " - " + i);
         }
+    }
+
+    public String getLayerName() {
+        return name;
     }
 }

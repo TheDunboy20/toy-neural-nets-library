@@ -1,5 +1,7 @@
 package msmarik;
 
+import msmarik.activations.Activations;
+import msmarik.losses.Losses;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -114,13 +116,15 @@ public class BackpropagationTest implements FixedNNTest{
 
     @Test
     void multiLabelOutputLayerBackprop() {
-        Net net = new Net(msmarik.losses.Losses.MSE());
 
-        Perceptron out1 = new Perceptron(msmarik.activations.Activations.linear(), new double[]{0.5}, 0, "out1");
-        Perceptron out2 = new Perceptron(msmarik.activations.Activations.linear(), new double[]{0.5}, 0, "out2");
-        Layer outputLayer = new Layer(new Perceptron[]{out1, out2});
+        Perceptron out1 = new Perceptron(new double[]{0.5}, 0, "out1");
+        Perceptron out2 = new Perceptron(new double[]{0.5}, 0, "out2");
 
-        net.addLayers(outputLayer);
+        Net net = new Net.Builder()
+                .weightInitializer(new HeWeightInitializer())
+                .addLayer(new Layer(new Perceptron[]{out1, out2}, Activations.linear()))
+                .lossFn(Losses.MSE())
+                .build();
 
         double[] input = {1.0};
         net.forward(input);

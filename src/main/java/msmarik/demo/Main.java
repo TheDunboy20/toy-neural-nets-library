@@ -1,5 +1,6 @@
 package msmarik.demo;
 
+import msmarik.HeWeightInitializer;
 import msmarik.Layer;
 import msmarik.Net;
 import msmarik.activations.Activations;
@@ -12,14 +13,13 @@ public class Main {
         double[] input = {1, 1, 1, 1};
         double[] label = new double[1];
 
-        final Layer layer1 = new Layer(10, Activations.relu());
-        final Layer layer2 = new Layer(20, Activations.relu());
-        final Layer layer3 = new Layer(1, Activations.linear());
-
-        final Net net = new Net(Losses.MSE());
-        net.addLayer(layer1);
-        net.addLayer(layer2);
-        net.addLayer(layer3);
+        Net net  = new Net.Builder()
+                .weightInitializer(new HeWeightInitializer())
+                .addLayer(new Layer(4, 10, Activations.relu()))
+                .addLayer(new Layer(10, 20, Activations.relu()))
+                .addLayer(new Layer(20, 1, Activations.linear()))
+                .lossFn(Losses.MSE())
+                .build();
 
         double[] result = net.forward(input);
         double loss = net.calculateLoss(result, label);

@@ -8,28 +8,35 @@ public class Perceptron {
     private static final Logger log = LoggerFactory.getLogger(Perceptron.class);
     private double[] weights;
     private Double bias;
-    private final Activation activationFn;
+    private Activation activationFn;
+    private WeightInitializer weightInitializer;
+    private int weightsNumber;
+    private int perceptronNumber;
     private double result;
     private double outputBeforeActivation;
     private double errorSignal;
     private double[] lastInput;
     private String name;
 
-    public Perceptron(Activation activationFn) {
+    public Perceptron(int weightsNumber, int perceptronNumber, Activation activationFn,
+                      WeightInitializer weightInitializer) {
+        this.weightsNumber = weightsNumber;
+        this.perceptronNumber = perceptronNumber;
         this.activationFn = activationFn;
+        this.weightInitializer = weightInitializer;
+
+        initializeWeights();
     }
 
-    public Perceptron(Activation activationFn, double[] weights, double bias, String name) {
-        this.activationFn = activationFn;
+    public Perceptron(double[] weights, double bias, String name) {
         this.weights = weights;
         this.bias = bias;
         this.name = name;
     }
 
     public double computeWeightedSum(double[] input) {
-        if (this.weights == null) {
-            setPerceptronSize(input.length);
-        } else if (this.weights.length != input.length) {
+        if (this.weights.length != input.length) {
+            System.out.println("Weights number: " + this.weightsNumber + " Input number: " + input.length);
             throw new IllegalArgumentException("Incorrect input size");
         }
 
@@ -54,13 +61,6 @@ public class Perceptron {
         return result;
     }
 
-    private void setPerceptronSize(int inputLength) {
-        this.weights = new double[inputLength];
-        for (int i = 0; i < inputLength; i++) {
-            this.weights[i] = 0.0001;
-        }
-    }
-
     public void updateErrorSignal(double errorSignalFromPreviousLayer) {
         log.debug("[{}] Error signal passed from previous layer: {}", this.name, errorSignalFromPreviousLayer);
         this.errorSignal = errorSignalFromPreviousLayer
@@ -76,6 +76,13 @@ public class Perceptron {
                     lastInput[i]);
             weights[i] -= learningRate * errorSignal * lastInput[i];
             log.debug("[{}] Updating weight[{}]. To: {} ", this.name, i, weights[i]);
+        }
+    }
+
+    public void initializeWeights() {
+        this.weights = new double[weightsNumber];
+        for (int i = 0; i < weightsNumber; i++) {
+            weights[i] = weightInitializer.initializeWeight(weightsNumber, perceptronNumber);
         }
     }
 
@@ -107,7 +114,9 @@ public class Perceptron {
         return Math.random() - 0.5;
     }
 
-    public void setName(String name) {this.name = name;}
+    public void setName(String name) {
+        this.name = name;
+    }
 
 
 }
