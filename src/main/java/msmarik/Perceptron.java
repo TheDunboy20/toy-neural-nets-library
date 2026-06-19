@@ -1,6 +1,7 @@
 package msmarik;
 
 import msmarik.activations.Activation;
+import msmarik.initializers.Initializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,7 +10,7 @@ public class Perceptron {
     private double[] weights;
     private Double bias;
     private Activation activationFn;
-    private WeightInitializer weightInitializer;
+    private Initializer weightInitializer;
     private int weightsNumber;
     private int perceptronNumber;
     private double result;
@@ -19,7 +20,7 @@ public class Perceptron {
     private String name;
 
     public Perceptron(int weightsNumber, int perceptronNumber, Activation activationFn,
-                      WeightInitializer weightInitializer) {
+                      Initializer weightInitializer) {
         this.weightsNumber = weightsNumber;
         this.perceptronNumber = perceptronNumber;
         this.activationFn = activationFn;
@@ -80,6 +81,10 @@ public class Perceptron {
     }
 
     public void initializeWeights() {
+        if (this.weights != null) {
+            log.debug("Skipping weight initialization, weights already computed.");
+            return;
+        }
         this.weights = new double[weightsNumber];
         for (int i = 0; i < weightsNumber; i++) {
             weights[i] = weightInitializer.initializeWeight(weightsNumber, perceptronNumber);

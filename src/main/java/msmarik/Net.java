@@ -1,5 +1,6 @@
 package msmarik;
 
+import msmarik.initializers.Initializer;
 import msmarik.losses.Loss;
 
 import java.util.ArrayList;
@@ -8,19 +9,20 @@ import java.util.List;
 public class Net {
     private final ArrayList<Layer> layers;
     private final Loss lossFn;
-    private final WeightInitializer weightInitializer;
+    private final Initializer weightInitializer;
 
     Net(Builder builder) {
-        this.layers = builder.layers;
+        this.layers = new ArrayList<>(builder.layers);
         this.lossFn = builder.lossFn;
         this.weightInitializer = builder.weightInitializer;
+        validateNetInvariants();
         initializeNet();
     }
 
     public static class Builder {
         private final ArrayList<Layer> layers = new ArrayList<>();
         private Loss lossFn;
-        private WeightInitializer weightInitializer;
+        private Initializer weightInitializer;
 
         public Builder addLayer(Layer layer) {
             layers.add(layer);
@@ -32,7 +34,7 @@ public class Net {
             return this;
         }
 
-        public Builder weightInitializer(WeightInitializer weightInitializer) {
+        public Builder weightInitializer(Initializer weightInitializer) {
             this.weightInitializer = weightInitializer;
             return this;
         }
@@ -42,8 +44,9 @@ public class Net {
         }
     }
 
+    @SuppressWarnings({"unchecked"})
     public List<Layer> getLayers() {
-        return this.layers;
+        return (List<Layer>) this.layers.clone();
     }
 
     public Layer getLayer(int index) {
@@ -87,6 +90,23 @@ public class Net {
             Layer layer = layers.get(i);
             layer.initializeLayer(weightInitializer);
             layer.setLayerName("Layer-" + i); // TODO: Refactor this to pass layerIndex inside
+        }
+    }
+
+    private static void validateLayerInvariants(Layer layer) {
+        if (layer == null) throw new IllegalStateException("Layer cannot be null");
+        if (layer.getActivationFn() == null) throw new IllegalStateException("Activation function cannot be null.");
+        if (layer.getPerceptronsNumber() < 1) throw new IllegalStateException("Layer must contain at least 1 perceptron");
+        if (layer.getWeightsNumber() < 1)  throw new IllegalStateException("Perceptron must have at least 1 weight");
+    }
+
+    private void validateNetInvariants() {
+        if (this.lossFn == null) throw new IllegalStateException("Loss function must be provided");
+        if (this.weightInitializer == null) throw new IllegalStateException("Weight initializer must be provided");
+        if (this.layers.isEmpty()) throw new IllegalStateException("At least one layer must exist");
+
+        for (Layer layer : this.layers) {
+            validateLayerInvariants(layer);
         }
     }
 }

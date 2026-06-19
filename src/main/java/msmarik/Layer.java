@@ -1,6 +1,7 @@
 package msmarik;
 
 import msmarik.activations.Activation;
+import msmarik.initializers.Initializer;
 import msmarik.losses.Loss;
 
 public class Layer {
@@ -24,7 +25,7 @@ public class Layer {
         this.activationFn = activationFn;
     }
 
-    public void initializeLayer(WeightInitializer weightInitializer) {
+    public void initializeLayer(Initializer weightInitializer) {
         this.perceptrons = new Perceptron[perceptronsNumber];
         for (int i = 0; i < perceptrons.length; i++) {
             Perceptron p = new Perceptron(weightsNumber, perceptronsNumber, activationFn, weightInitializer);
@@ -87,7 +88,7 @@ public class Layer {
         }
     }
 
-    public String getLayerName() {
-        return name;
-    }
+    public int getWeightsNumber() {return this.weightsNumber;}
+    public int getPerceptronsNumber() {return this.perceptronsNumber;}
+    public Activation getActivationFn() {return this.activationFn;}
 }

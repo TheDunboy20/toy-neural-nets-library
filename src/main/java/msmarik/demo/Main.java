@@ -1,9 +1,9 @@
 package msmarik.demo;
 
-import msmarik.HeWeightInitializer;
 import msmarik.Layer;
 import msmarik.Net;
 import msmarik.activations.Activations;
+import msmarik.initializers.Initializers;
 import msmarik.losses.Losses;
 
 import java.util.Arrays;
@@ -14,7 +14,7 @@ public class Main {
         double[] label = new double[1];
 
         Net net  = new Net.Builder()
-                .weightInitializer(new HeWeightInitializer())
+                .weightInitializer(Initializers.he())
                 .addLayer(new Layer(4, 10, Activations.relu()))
                 .addLayer(new Layer(10, 20, Activations.relu()))
                 .addLayer(new Layer(20, 1, Activations.linear()))
