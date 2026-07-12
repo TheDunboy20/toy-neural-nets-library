@@ -102,8 +102,12 @@ public class Net {
 
     private void validateNetInvariants() {
         if (this.lossFn == null) throw new IllegalStateException("Loss function must be provided");
-        if (this.weightInitializer == null) throw new IllegalStateException("Weight initializer must be provided");
         if (this.layers.isEmpty()) throw new IllegalStateException("At least one layer must exist");
+
+        boolean requiresInitializer = this.layers.stream().anyMatch(layer -> layer != null && !layer.isInitialized());
+        if (requiresInitializer && this.weightInitializer == null) {
+            throw new IllegalStateException("Weight initializer is required for uninitialized layers");
+        }
 
         for (Layer layer : this.layers) {
             validateLayerInvariants(layer);

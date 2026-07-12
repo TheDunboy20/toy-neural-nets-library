@@ -5,8 +5,8 @@ import msmarik.initializers.Initializer;
 import msmarik.losses.Loss;
 
 public class Layer {
-    private int weightsNumber;
-    private int perceptronsNumber;
+    private final int weightsNumber;
+    private final int perceptronsNumber;
     private final Activation activationFn;
     private String name;
     private Perceptron[] perceptrons;
@@ -17,19 +17,55 @@ public class Layer {
         this.activationFn = activationFn;
     }
 
-    /*
-    * For testing purposes only
-    * */
+    /** Creates a layer whose perceptrons already contain explicit parameters. */
     public Layer(Perceptron[] perceptrons, Activation activationFn) {
-        this.perceptrons = perceptrons;
+        if (perceptrons == null || perceptrons.length == 0) {
+            throw new IllegalArgumentException("Perceptrons cannot be null or empty");
+        }
+
+        if (perceptrons[0] == null) {
+            throw new IllegalArgumentException("Perceptrons cannot contain null values");
+        }
+
+        this.perceptrons = perceptrons.clone();
+        this.perceptronsNumber = perceptrons.length;
+        this.weightsNumber = perceptrons[0].getWeights().length;
         this.activationFn = activationFn;
+
+        validatePerceptronShapes();
     }
 
     public void initializeLayer(Initializer weightInitializer) {
+        if (isInitialized()) {
+            return;
+        }
+        if (weightInitializer == null) {
+            throw new IllegalStateException("Weight initializer is required for an uninitialized layer");
+        }
+
         this.perceptrons = new Perceptron[perceptronsNumber];
         for (int i = 0; i < perceptrons.length; i++) {
             Perceptron p = new Perceptron(weightsNumber, perceptronsNumber, activationFn, weightInitializer);
             perceptrons[i] = p;
+        }
+    }
+
+    public boolean isInitialized() {
+        return perceptrons != null;
+    }
+
+    private void validatePerceptronShapes() {
+        if (weightsNumber < 1) {
+            throw new IllegalArgumentException("Perceptrons must have at least one weight");
+        }
+
+        for (Perceptron perceptron : perceptrons) {
+            if (perceptron == null) {
+                throw new IllegalArgumentException("Perceptrons cannot contain null values");
+            }
+            if (perceptron.getWeights().length != weightsNumber) {
+                throw new IllegalArgumentException("All perceptrons must have the same number of weights");
+            }
         }
     }
 

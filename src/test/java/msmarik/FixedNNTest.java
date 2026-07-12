@@ -7,17 +7,17 @@ public interface FixedNNTest {
     default Net buildFixedNet() {
 
         Perceptron[] layer1Perceptrons = new Perceptron[]{
-                new Perceptron(new double[]{0.1, 0.3}, 0, "perceptron-1"),
-                new Perceptron(new double[]{0.3, 0.4}, 0, "perceptron-2"),
+                new Perceptron(new double[]{0.1, 0.2}, 0, "perceptron-1", Activations.linear()),
+                new Perceptron(new double[]{0.3, 0.4}, 0, "perceptron-2", Activations.linear()),
         };
 
         Perceptron[] layer2Perceptrons = new Perceptron[]{
-                new Perceptron(new double[]{0.5, 0.6}, 0, "perceptron-3"),
-                new Perceptron(new double[]{0.7, 0.8}, 0, "perceptron-4"),
+                new Perceptron(new double[]{0.5, 0.6}, 0, "perceptron-3", Activations.linear()),
+                new Perceptron(new double[]{0.7, 0.8}, 0, "perceptron-4", Activations.linear()),
         };
 
         Perceptron[] layer3Perceptron = new Perceptron[]{
-                new Perceptron(new double[]{0.9, 1.0}, 0, "perceptron-5")
+                new Perceptron(new double[]{0.9, 1.0}, 0, "perceptron-5", Activations.linear())
         };
 
         return new Net.Builder()

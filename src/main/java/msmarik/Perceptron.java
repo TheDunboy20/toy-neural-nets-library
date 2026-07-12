@@ -9,7 +9,7 @@ public class Perceptron {
     private static final Logger log = LoggerFactory.getLogger(Perceptron.class);
     private double[] weights;
     private Double bias;
-    private Activation activationFn;
+    private final Activation activationFn;
     private Initializer weightInitializer;
     private int weightsNumber;
     private int perceptronNumber;
@@ -29,10 +29,18 @@ public class Perceptron {
         initializeWeights();
     }
 
-    public Perceptron(double[] weights, double bias, String name) {
-        this.weights = weights;
+    public Perceptron(double[] weights, double bias, String name, Activation activationFn) {
+        if (weights == null || weights.length == 0) {
+            throw new IllegalArgumentException("Weights cannot be null or empty");
+        }
+        if (activationFn == null) {
+            throw new IllegalArgumentException("Activation function cannot be null");
+        }
+
+        this.weights = weights.clone();
         this.bias = bias;
         this.name = name;
+        this.activationFn = activationFn;
     }
 
     public double computeWeightedSum(double[] input) {
@@ -122,6 +130,4 @@ public class Perceptron {
     public void setName(String name) {
         this.name = name;
     }
-
-
 }
