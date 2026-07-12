@@ -40,7 +40,7 @@ class InitializationLifecycleTest {
 
         IllegalStateException exception = assertThrows(IllegalStateException.class, builder::build);
 
-        assertEquals("Weight initializer is required for uninitialized layers", exception.getMessage());
+        assertEquals("Weight initializer is required for an uninitialized layer", exception.getMessage());
     }
 
     @Test

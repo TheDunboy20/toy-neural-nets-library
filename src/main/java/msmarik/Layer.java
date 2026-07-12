@@ -15,6 +15,8 @@ public class Layer {
         this.weightsNumber = weightsNumber;
         this.perceptronsNumber = perceptronsNumber;
         this.activationFn = activationFn;
+
+        validateLayerStructure();
     }
 
     /** Creates a layer whose perceptrons already contain explicit parameters. */
@@ -32,6 +34,7 @@ public class Layer {
         this.weightsNumber = perceptrons[0].getWeights().length;
         this.activationFn = activationFn;
 
+        validateLayerStructure();
         validatePerceptronShapes();
     }
 
@@ -55,10 +58,6 @@ public class Layer {
     }
 
     private void validatePerceptronShapes() {
-        if (weightsNumber < 1) {
-            throw new IllegalArgumentException("Perceptrons must have at least one weight");
-        }
-
         for (Perceptron perceptron : perceptrons) {
             if (perceptron == null) {
                 throw new IllegalArgumentException("Perceptrons cannot contain null values");
@@ -114,6 +113,12 @@ public class Layer {
             perceptron.updateWeights(learningRate);
             perceptron.updateBias(learningRate);
         }
+    }
+
+    private void validateLayerStructure() {
+        if (this.activationFn == null) throw new IllegalStateException("Activation function cannot be null.");
+        if (this.perceptronsNumber < 1) throw new IllegalStateException("Layer must contain at least 1 perceptron");
+        if (this.weightsNumber < 1)  throw new IllegalStateException("Perceptron must have at least 1 weight");
     }
 
     public void setLayerName(String name) {

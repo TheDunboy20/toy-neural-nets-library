@@ -5,6 +5,7 @@ import msmarik.losses.Loss;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Net {
     private final ArrayList<Layer> layers;
@@ -15,7 +16,7 @@ public class Net {
         this.layers = new ArrayList<>(builder.layers);
         this.lossFn = builder.lossFn;
         this.weightInitializer = builder.weightInitializer;
-        validateNetInvariants();
+        validateNetStructure();
         initializeNet();
     }
 
@@ -25,7 +26,7 @@ public class Net {
         private Initializer weightInitializer;
 
         public Builder addLayer(Layer layer) {
-            layers.add(layer);
+            layers.add(Objects.requireNonNull(layer, "Layer cannot be null"));
             return this;
         }
 
@@ -93,24 +94,8 @@ public class Net {
         }
     }
 
-    private static void validateLayerInvariants(Layer layer) {
-        if (layer == null) throw new IllegalStateException("Layer cannot be null");
-        if (layer.getActivationFn() == null) throw new IllegalStateException("Activation function cannot be null.");
-        if (layer.getPerceptronsNumber() < 1) throw new IllegalStateException("Layer must contain at least 1 perceptron");
-        if (layer.getWeightsNumber() < 1)  throw new IllegalStateException("Perceptron must have at least 1 weight");
-    }
-
-    private void validateNetInvariants() {
+    private void validateNetStructure() {
         if (this.lossFn == null) throw new IllegalStateException("Loss function must be provided");
         if (this.layers.isEmpty()) throw new IllegalStateException("At least one layer must exist");
-
-        boolean requiresInitializer = this.layers.stream().anyMatch(layer -> layer != null && !layer.isInitialized());
-        if (requiresInitializer && this.weightInitializer == null) {
-            throw new IllegalStateException("Weight initializer is required for uninitialized layers");
-        }
-
-        for (Layer layer : this.layers) {
-            validateLayerInvariants(layer);
-        }
     }
 }
