@@ -45,6 +45,18 @@ public class Net {
         }
     }
 
+    public double trainStep(double[] input, double[] correctLabels, double learningRate) {
+        validateLearningRate(learningRate);
+        validateInputAndOutputShape(input, correctLabels);
+
+        double[] predictedProbabilities = forward(input);
+        double preUpdateLoss = calculateLoss(predictedProbabilities, correctLabels);
+        backpropagate(correctLabels);
+        updateWeightsAndBiases(learningRate);
+
+        return preUpdateLoss;
+    }
+
     @SuppressWarnings({"unchecked"})
     public List<Layer> getLayers() {
         return (List<Layer>) this.layers.clone();
@@ -97,5 +109,25 @@ public class Net {
     private void validateNetStructure() {
         if (this.lossFn == null) throw new IllegalStateException("Loss function must be provided");
         if (this.layers.isEmpty()) throw new IllegalStateException("At least one layer must exist");
+    }
+
+    private void validateInputAndOutputShape(double[] input, double[] correctLabels) {
+        if (input == null) throw new IllegalArgumentException("Input to the network cannot be null");
+        if (correctLabels == null) throw new IllegalArgumentException("The correct labels can not be null");
+
+        final Layer firstLayer = layers.getFirst();
+
+        if (input.length != firstLayer.getWeightsNumber()) {
+            throw new IllegalArgumentException("Input shape: [" + input.length + "] must match the first layer shape: [" + firstLayer.getWeightsNumber() + "]");
+        }
+
+        final Layer outputLayer = layers.getLast();
+        if (correctLabels.length != outputLayer.getPerceptronsNumber()) {
+            throw new IllegalArgumentException("Correct labels shape: [" + correctLabels.length + "] must match the output layer shape: [" + outputLayer.getPerceptronsNumber() + "]");
+        }
+    }
+
+    private void validateLearningRate(double learningRate) {
+        if (!Double.isFinite(learningRate) || learningRate <= 0) throw new IllegalArgumentException("Learning rate must be finite and greater than 0.");
     }
 }
