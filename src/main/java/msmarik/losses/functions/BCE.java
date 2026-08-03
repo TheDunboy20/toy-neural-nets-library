@@ -20,10 +20,10 @@ public record BCE() implements Loss {
     }
 
     @Override
-    public double derivative(double predictedProbability, double correctLabel) {
+    public double derivative(double predictedProbability, double correctLabel, int outputCount) {
         double eps = 1e-15;
         predictedProbability = Math.max(eps, Math.min(1 - eps, predictedProbability));
 
-        return (1 - correctLabel) / (1 - predictedProbability) - correctLabel / predictedProbability;
+        return ((1 - correctLabel) / (1 - predictedProbability) - correctLabel / predictedProbability) / outputCount;
     }
 }
