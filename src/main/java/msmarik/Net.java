@@ -28,8 +28,8 @@ public class Net {
         public Builder addLayer(Layer layer) {
             if (!layers.isEmpty()) {
                 if (layers.getLast().getPerceptronsNumber() != layer.getWeightsNumber()) {
-                    throw new IllegalArgumentException("Weights in perceptron in the current layer: [" + layers.getLast().getPerceptronsNumber()
-                    + "] != Do not match the number of perceptrons in previous layer[" + layers.getLast().getPerceptronsNumber() + "]");
+                    throw new IllegalArgumentException("Current layer weight count [" + layer.getWeightsNumber()
+                    + "] must match previous layer perceptron count [" + layers.getLast().getPerceptronsNumber() + "]");
                 }
             }
             layers.add(Objects.requireNonNull(layer, "Layer cannot be null"));
