@@ -86,10 +86,11 @@ public class Layer {
 
     public void backpropagateOutputLayer(double[] target, Loss lossFn) {
 
-        for (int i = 0; i < perceptrons.length; i++) {
+        final int outputCount = perceptrons.length;
+        for (int i = 0; i < outputCount; i++) {
             final Perceptron currentPerceptron = perceptrons[i];
             double predictedProbability = currentPerceptron.getResult();
-            double error = lossFn.derivative(predictedProbability, target[i]);
+            double error = lossFn.derivative(predictedProbability, target[i], outputCount);
 
             currentPerceptron.updateErrorSignal(error);
         }

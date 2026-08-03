@@ -17,11 +17,11 @@ public record MAE() implements Loss {
     }
 
     @Override
-    public double derivative(double predictedProbability, double correctLabel) {
+    public double derivative(double predictedProbability, double correctLabel, int outputCount) {
         double diff = predictedProbability - correctLabel;
 
-        if (diff > 0) return 1;
-        if (diff < 0) return -1;
+        if (diff > 0) return 1.0 / outputCount;
+        if (diff < 0) return -1.0 / outputCount;
         return 0;
     }
 }

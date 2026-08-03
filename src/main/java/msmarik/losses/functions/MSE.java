@@ -18,7 +18,7 @@ public record MSE() implements Loss {
     }
 
     @Override
-    public double derivative(double predictedProbability, double correctLabel) {
-        return 2  * (predictedProbability - correctLabel);
+    public double derivative(double predictedProbability, double correctLabel, int outputCount) {
+        return (2  * (predictedProbability - correctLabel)) / outputCount;
     }
 }
