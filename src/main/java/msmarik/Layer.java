@@ -1,25 +1,71 @@
 package msmarik;
 
 import msmarik.activations.Activation;
+import msmarik.initializers.Initializer;
 import msmarik.losses.Loss;
 
 public class Layer {
-    private final Perceptron[] perceptrons;
+    private final int weightsNumber;
+    private final int perceptronsNumber;
+    private final Activation activationFn;
     private String name;
+    private Perceptron[] perceptrons;
 
-    public Layer(int outputFeatureSize, Activation activationFn) {
-        this.perceptrons = new Perceptron[outputFeatureSize];
+    public Layer(int weightsNumber, int perceptronsNumber, Activation activationFn) {
+        this.weightsNumber = weightsNumber;
+        this.perceptronsNumber = perceptronsNumber;
+        this.activationFn = activationFn;
 
-        for (int i = 0; i < outputFeatureSize; i++) {
-            perceptrons[i] = new Perceptron(activationFn);
+        validateLayerStructure();
+    }
+
+    /** Creates a layer whose perceptrons already contain explicit parameters. */
+    public Layer(Perceptron[] perceptrons, Activation activationFn) {
+        if (perceptrons == null || perceptrons.length == 0) {
+            throw new IllegalArgumentException("Perceptrons cannot be null or empty");
+        }
+
+        if (perceptrons[0] == null) {
+            throw new IllegalArgumentException("Perceptrons cannot contain null values");
+        }
+
+        this.perceptrons = perceptrons.clone();
+        this.perceptronsNumber = perceptrons.length;
+        this.weightsNumber = perceptrons[0].getWeights().length;
+        this.activationFn = activationFn;
+
+        validateLayerStructure();
+        validatePerceptronShapes();
+    }
+
+    public void initializeLayer(Initializer weightInitializer) {
+        if (isInitialized()) {
+            return;
+        }
+        if (weightInitializer == null) {
+            throw new IllegalStateException("Weight initializer is required for an uninitialized layer");
+        }
+
+        this.perceptrons = new Perceptron[perceptronsNumber];
+        for (int i = 0; i < perceptrons.length; i++) {
+            Perceptron p = new Perceptron(weightsNumber, perceptronsNumber, activationFn, weightInitializer);
+            perceptrons[i] = p;
         }
     }
 
-    /*
-    * For testing purposes only
-    * */
-    public Layer(Perceptron[] perceptrons) {
-        this.perceptrons = perceptrons;
+    public boolean isInitialized() {
+        return perceptrons != null;
+    }
+
+    private void validatePerceptronShapes() {
+        for (Perceptron perceptron : perceptrons) {
+            if (perceptron == null) {
+                throw new IllegalArgumentException("Perceptrons cannot contain null values");
+            }
+            if (perceptron.getWeights().length != weightsNumber) {
+                throw new IllegalArgumentException("All perceptrons must have the same number of weights");
+            }
+        }
     }
 
     public Perceptron[] getPerceptrons() {
@@ -69,6 +115,12 @@ public class Layer {
         }
     }
 
+    private void validateLayerStructure() {
+        if (this.activationFn == null) throw new IllegalStateException("Activation function cannot be null.");
+        if (this.perceptronsNumber < 1) throw new IllegalStateException("Layer must contain at least 1 perceptron");
+        if (this.weightsNumber < 1)  throw new IllegalStateException("Perceptron must have at least 1 weight");
+    }
+
     public void setLayerName(String name) {
         this.name = name;
 
@@ -76,4 +128,8 @@ public class Layer {
             perceptrons[i].setName(name + " - " + i);
         }
     }
+
+    public int getWeightsNumber() {return this.weightsNumber;}
+    public int getPerceptronsNumber() {return this.perceptronsNumber;}
+    public Activation getActivationFn() {return this.activationFn;}
 }

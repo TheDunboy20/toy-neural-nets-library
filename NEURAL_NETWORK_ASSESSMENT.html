@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Toy Neural Nets Library — Technical Assessment</title>
+  <style>
+    :root { color-scheme: light; --ink:#19212c; --muted:#5b6776; --line:#d9e1e8; --paper:#fff; --wash:#f4f8fb; --good:#16734d; --warn:#a75c00; --bad:#b32828; --blue:#185b96; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--wash); color: var(--ink); font: 16px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    main { max-width: 1040px; margin: 38px auto; padding: 0 24px 48px; }
+    article { background:var(--paper); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 10px 30px #23374a12; }
+    header { padding:42px 48px 32px; background:linear-gradient(125deg,#102b47,#1d5c8f); color:#fff; }
+    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,3.3rem); letter-spacing:-.045em; line-height:1.05; }
+    h2 { margin:38px 0 13px; font-size:1.45rem; letter-spacing:-.025em; }
+    h3 { margin:22px 0 8px; font-size:1.06rem; }
+    p { margin:10px 0; }
+    .subtitle { margin:0; max-width:760px; color:#dbeafa; font-size:1.1rem; }
+    .meta { margin-top:20px; font-size:.9rem; color:#c8def2; }
+    .content { padding:0 48px 42px; }
+    .verdict { margin:26px 0 6px; padding:20px 22px; border-left:5px solid var(--blue); border-radius:7px; background:#eef6fc; }
+    .verdict strong { font-size:1.1rem; }
+    table { width:100%; border-collapse:collapse; margin:14px 0; font-size:.96rem; }
+    th, td { padding:12px 10px; vertical-align:top; border-bottom:1px solid var(--line); text-align:left; }
+    th { color:var(--muted); font-weight:650; }
+    .score { white-space:nowrap; font-weight:800; }
+    .green { color:var(--good); } .amber { color:var(--warn); } .red { color:var(--bad); }
+    .meter { height:9px; width:112px; min-width:112px; overflow:hidden; border-radius:10px; background:#e4eaf0; }
+    .meter > span { display:block; height:100%; background:linear-gradient(90deg,#e18737,#1e8a62); }
+    ul, ol { padding-left:24px; } li { margin:7px 0; }
+    code { padding:1px 4px; border-radius:4px; background:#edf1f5; font-size:.9em; }
+    .finding { margin:12px 0; padding:15px 17px; border:1px solid var(--line); border-radius:9px; }
+    .finding p { margin:5px 0 0; color:#344150; }
+    .tag { display:inline-block; min-width:2.6em; padding:1px 7px; border-radius:999px; color:#fff; font-size:.75rem; font-weight:800; text-align:center; vertical-align:1px; }
+    .p0 { background:var(--bad); } .p1 { background:var(--warn); } .p2 { background:#587086; }
+    .evidence { color:var(--muted); font-size:.91rem; }
+    .path { padding:17px 19px; border-radius:9px; background:#fafbfc; border:1px solid var(--line); }
+    .footnote { margin-top:28px; color:var(--muted); font-size:.88rem; }
+    @media (max-width:640px) { main { margin:0; padding:0; } article { border:none; border-radius:0; } header,.content { padding-left:23px; padding-right:23px; } .meter { width:70px; min-width:70px; } table { font-size:.88rem; } th,td { padding:9px 5px; } }
+  </style>
+</head>
+<body>
+<main>
+  <article>
+    <header>
+      <h1>Toy Neural Nets Library</h1>
+      <p class="subtitle">Independent code review: usability, correctness, learning value, and the path to an MNIST-capable implementation.</p>
+      <p class="meta">Repository state reviewed 29 July 2026 · Java / Gradle · source and tests inspected; clean build executed</p>
+    </header>
+    <div class="content">
+      <section>
+        <h2>Bottom line</h2>
+        <div class="verdict">
+          <strong>This is a promising educational MLP core, not yet an MNIST-ready library.</strong>
+          The repository correctly expresses the central idea of a dense neural network—weighted sums, activations, reverse error propagation, and parameter updates—and its small deterministic tests pass. It is roughly <strong>20–30% of the way to a minimal, reproducible MNIST learning project</strong>, and under <strong>10% of the way to a generally usable neural-network library</strong>. The remaining work is concentrated in a few foundational pieces rather than cosmetic features.
+        </div>
+        <p>A handwritten training loop could technically feed MNIST pixels through the current API, using ten sigmoid outputs and one-hot targets. I would not call that a sound MNIST solution: there is no softmax/categorical cross-entropy, no dataset or epoch pipeline, no batching, and the current internal defensive copying makes a normal 784→hidden-layer network prohibitively allocation-heavy.</p>
+      </section>
+
+      <section>
+        <h2>Scorecard</h2>
+        <table>
+          <thead><tr><th>Perspective</th><th>Rating</th><th></th><th>Assessment</th></tr></thead>
+          <tbody>
+            <tr><td>Educational value</td><td class="score green">7 / 10</td><td><div class="meter"><span style="width:70%"></span></div></td><td>Small, readable classes make the forward and backward passes approachable.</td></tr>
+            <tr><td>Core scalar MLP correctness</td><td class="score amber">5 / 10</td><td><div class="meter"><span style="width:50%"></span></div></td><td>Basic linear-network calculations are tested; multi-output loss scaling and important combinations remain incorrect or unverified.</td></tr>
+            <tr><td>MNIST readiness</td><td class="score red">2 / 10</td><td><div class="meter"><span style="width:20%"></span></div></td><td>The required architecture can be described, but the training, data, multiclass, and performance foundations are absent.</td></tr>
+            <tr><td>Public API and safety</td><td class="score red">3 / 10</td><td><div class="meter"><span style="width:30%"></span></div></td><td>Useful primitives exist, but invalid network shapes and incorrect call order are not prevented.</td></tr>
+            <tr><td>Performance/scalability</td><td class="score red">1 / 10</td><td><div class="meter"><span style="width:10%"></span></div></td><td>Object-per-neuron design is fine for learning; repeated array cloning in backpropagation is a serious blocker for image data.</td></tr>
+            <tr><td>Tests and verification</td><td class="score amber">4 / 10</td><td><div class="meter"><span style="width:40%"></span></div></td><td>14 deterministic unit tests pass, but there is no finite-difference gradient check or end-to-end convergence test.</td></tr>
+            <tr><td>Documentation and onboarding</td><td class="score red">2 / 10</td><td><div class="meter"><span style="width:20%"></span></div></td><td>The README describes a different API and advertises categorical cross-entropy that the source does not implement.</td></tr>
+            <tr><td>Production suitability</td><td class="score red">1 / 10</td><td><div class="meter"><span style="width:10%"></span></div></td><td>No batching, serialization, reproducibility, metrics, error model, versioned API, or performance discipline.</td></tr>
+          </tbody>
+        </table>
+        <p class="evidence">Ratings are intentionally calibrated to the project’s stated “toy” purpose. A 7/10 for educational value does not mean the implementation is ready for real training workloads.</p>
+      </section>
+
+      <section>
+        <h2>What is already working</h2>
+        <ul>
+          <li>Dense layers, a builder, ReLU/sigmoid/tanh/linear activations, MSE/MAE/BCE losses, and He initialization are present.</li>
+          <li>The reverse pass calculates all error signals before parameters are updated, which is the right high-level ordering for per-example SGD.</li>
+          <li>The tests use fixed parameters to verify forward values, hidden/output error signals, and one update step. A clean <code>sh gradlew clean test</code> run succeeded: <strong>14 tests, 0 failures</strong>.</li>
+          <li>Explicitly parameterized layers make deterministic examples and future gradient checks straightforward.</li>
+        </ul>
+        <p>That is real progress. The project has moved beyond a collection of formulas: it has a coherent feed-forward computation graph and a working learning-step substrate for a small, single-example dense network.</p>
+      </section>
+
+      <section>
+        <h2>Material gaps and risks</h2>
+        <div class="finding"><strong><span class="tag p0">P0</span> No multiclass classification path.</strong><p>MNIST has ten mutually exclusive classes. There is no softmax activation and no categorical cross-entropy (CCE), despite the README listing CCE. Ten independent sigmoid+BCE outputs are a workaround, not the conventional or most stable formulation. Add a numerically stable logits→softmax→cross-entropy path with the fused gradient <code>p − y</code>.</p></div>
+        <div class="finding"><strong><span class="tag p0">P0</span> No training or data pipeline.</strong><p>The library exposes <code>forward</code>, <code>backpropagate</code>, and <code>updateWeightsAndBiases</code>, but has no <code>trainStep</code>, epochs, batches, shuffle, MNIST IDX reader, normalization, one-hot encoding, accuracy calculation, validation split, or example that learns anything. A user must invent the most error-prone workflow themselves.</p></div>
+        <div class="finding"><strong><span class="tag p0">P0</span> Backpropagation allocates far too much for MNIST.</strong><p><code>Layer.backpropagateHiddenLayer</code> calls <code>nextPerceptron.getWeights()</code> inside its inner loop. That getter clones the entire weight array. For just a 784→128 connection, backpropagating one preceding layer can clone roughly 784 × 128 arrays of length 784: about 630 MB of raw double payload per example, before array overhead. Preserve public immutability, but use an internal non-copying accessor or store parameters in contiguous matrices.</p></div>
+        <div class="finding"><strong><span class="tag p1">P1</span> Loss values and gradients disagree for multiple outputs.</strong><p>MSE and BCE report the mean loss across output elements, but their derivatives omit division by the output count. With one output the tests cannot reveal it; with ten MNIST outputs, the reported objective and applied gradient differ by a factor of ten. Either return a sum or scale the derivative consistently.</p></div>
+        <div class="finding"><strong><span class="tag p1">P1</span> Model structure is not validated end-to-end.</strong><p>Construction checks only that a loss exists and at least one layer was added. It does not check that each layer’s <code>weightsNumber</code> matches the previous layer’s output size, so malformed networks build and fail later during a forward pass. The input size is also not a property of <code>Net</code>.</p></div>
+        <div class="finding"><strong><span class="tag p1">P1</span> The lifecycle permits stale or missing gradients.</strong><p>Calling update twice after one backpropagation repeats an old gradient; calling backpropagation before forward can lead to null cached input during update. The existing sequential-update test explicitly accepts repeated stale-gradient updates. Offer one atomic <code>trainStep(input, target, learningRate)</code> first; keep lower-level operations only as advanced APIs with state checks.</p></div>
+        <div class="finding"><strong><span class="tag p1">P1</span> Experiments cannot be reproduced.</strong><p>He weights use <code>ThreadLocalRandom</code> and biases use <code>Math.random()</code>; neither accepts a seed. There is no model save/load. Learning results cannot be reliably compared or resumed.</p></div>
+        <div class="finding"><strong><span class="tag p2">P2</span> Design and hygiene issues.</strong><p>A <code>Layer</code> can claim one activation while its explicit perceptrons use another; getters expose mutable perceptron arrays; validation uses generic exceptions and one input error prints to standard output; and the build does not declare a Java toolchain/release even though <code>List.getLast()</code> requires Java 21+.</p></div>
+      </section>
+
+      <section>
+        <h2>Test coverage: what the green build means</h2>
+        <table>
+          <thead><tr><th>Verified</th><th>Not verified</th></tr></thead>
+          <tbody>
+            <tr><td>Hand-calculated linear forward pass; deterministic inference; weights unchanged by inference.</td><td>ReLU, sigmoid, and tanh gradient behavior; saturated numerical cases; BCE edge cases.</td></tr>
+            <tr><td>Hand-calculated error signals and weight updates in a small fixed network.</td><td>Finite-difference gradients for all parameters and losses; multi-output loss scaling.</td></tr>
+            <tr><td>Basic initialization lifecycle.</td><td>Invalid adjacent layer shapes, target sizes, null inputs, lifecycle misuse, or seeded repeatability.</td></tr>
+            <tr><td>Compilation and 14 JUnit tests pass on the reviewed environment.</td><td>Any end-to-end loss reduction, XOR learning, MNIST loading, training accuracy, speed, or memory use.</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Smallest credible MNIST milestone</h2>
+        <div class="path">
+          <ol>
+            <li><strong>Make the core trustworthy.</strong> Define an input size; validate every adjacent shape and target; make one safe <code>trainStep</code>; correct mean-loss gradients; add numerical-gradient and XOR/convergence tests.</li>
+            <li><strong>Add the MNIST objective.</strong> Implement stable softmax plus categorical cross-entropy, one-hot labels, argmax, and accuracy. Keep logits separate from activation values where useful.</li>
+            <li><strong>Make it feasible.</strong> Replace per-perceptron copying in the hot path with matrix/array operations or at least internal direct reads; accumulate and average mini-batch gradients instead of mutating on every example.</li>
+            <li><strong>Deliver a reproducible example.</strong> Add an IDX reader, [0,1] pixel normalization, deterministic seed, train/test reporting, and a runnable 784→128→10 example that records epoch loss and accuracy.</li>
+            <li><strong>Then broaden the library.</strong> Add Xavier initialization (for tanh/sigmoid), optimizers, model persistence, regularization, progress callbacks, documentation, and CI. Do these after the MNIST baseline is proven.</li>
+          </ol>
+        </div>
+        <p>Success criterion for that milestone: a clean checkout can run one documented command, train deterministically, show steadily decreasing training loss, and report held-out MNIST accuracy. A small dense baseline should be judged first for correctness and reproducibility—not for matching modern CNN performance.</p>
+      </section>
+
+      <section>
+        <h2>Repository-specific documentation corrections</h2>
+        <ul>
+          <li>The README sample no longer compiles: it uses <code>new Net(Losses.MSE(), 0.001)</code> and <code>net.addLayer(...)</code>, while the current source uses <code>new Net.Builder()</code>.</li>
+          <li>The README claims categorical cross-entropy, but <code>Losses</code> exposes only BCE, MAE, and MSE.</li>
+          <li>The README should state that the current API is single-example SGD primitives, rather than suggesting a complete training mechanism.</li>
+        </ul>
+      </section>
+
+      <p class="footnote">Scope: static review of all main/test Java sources, README/build configuration, and a clean Gradle test/build. No MNIST data was downloaded or trained; therefore performance and accuracy claims are deliberately not invented. Existing unrelated worktree change to <code>.gitignore</code> was not modified.</p>
+    </div>
+  </article>
+</main>
+</body>
+</html>

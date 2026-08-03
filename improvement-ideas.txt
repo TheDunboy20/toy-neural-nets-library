@@ -1,0 +1,1 @@
+1. Introduce separate exception for validating the structure of the net

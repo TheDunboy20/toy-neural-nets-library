@@ -5,23 +5,26 @@ import msmarik.losses.Losses;
 
 public interface FixedNNTest {
     default Net buildFixedNet() {
-        Net net = new Net(Losses.MSE());
 
-        // Layer 1
-        Perceptron h1 = new Perceptron(Activations.linear(), new double[]{0.1, 0.2}, 0, "h1");
-        Perceptron h2 = new Perceptron(Activations.linear(), new double[]{0.3, 0.4}, 0, "h2");
-        Layer l1 = new Layer(new Perceptron[]{h1, h2});
+        Perceptron[] layer1Perceptrons = new Perceptron[]{
+                new Perceptron(new double[]{0.1, 0.2}, 0, "perceptron-1", Activations.linear()),
+                new Perceptron(new double[]{0.3, 0.4}, 0, "perceptron-2", Activations.linear()),
+        };
 
-        // Layer 2
-        Perceptron h3 = new Perceptron(Activations.linear(), new double[]{0.5, 0.6}, 0, "h3");
-        Perceptron h4 = new Perceptron(Activations.linear(), new double[]{0.7, 0.8}, 0, "h4");
-        Layer l2 = new Layer(new Perceptron[]{h3, h4});
+        Perceptron[] layer2Perceptrons = new Perceptron[]{
+                new Perceptron(new double[]{0.5, 0.6}, 0, "perceptron-3", Activations.linear()),
+                new Perceptron(new double[]{0.7, 0.8}, 0, "perceptron-4", Activations.linear()),
+        };
 
-        // Output
-        Perceptron h5 = new Perceptron(Activations.linear(), new double[]{0.9, 1.0}, 0, "h5");
-        Layer l3 = new Layer(new Perceptron[]{h5});
+        Perceptron[] layer3Perceptron = new Perceptron[]{
+                new Perceptron(new double[]{0.9, 1.0}, 0, "perceptron-5", Activations.linear())
+        };
 
-        net.addLayers(l1, l2, l3);
-        return net;
+        return new Net.Builder()
+                .addLayer(new Layer(layer1Perceptrons, Activations.linear()))
+                .addLayer(new Layer(layer2Perceptrons, Activations.linear()))
+                .addLayer(new Layer(layer3Perceptron, Activations.linear()))
+                .lossFn(Losses.MSE())
+                .build();
     }
 }
