@@ -1,17 +1,23 @@
 package msmarik.activations.functions;
 
 import msmarik.activations.Activation;
+import msmarik.activations.DoubleArrayUnaryOperator;
 
-import java.util.function.DoubleUnaryOperator;
+import java.util.Arrays;
 
 public record Linear() implements Activation {
     @Override
-    public DoubleUnaryOperator standard() {
-        return DoubleUnaryOperator.identity();
+    public DoubleArrayUnaryOperator standard() {
+        return arr -> arr;
     }
 
+    // TODO: Once enough data is present, performance of this function vs using streams might be compared.
     @Override
-    public DoubleUnaryOperator derivative() {
-        return x -> 1;
+    public DoubleArrayUnaryOperator derivative() {
+        return arr -> {
+            double[] result = new double[arr.length];
+            Arrays.fill(result, 1);
+            return result;
+        };
     }
 }

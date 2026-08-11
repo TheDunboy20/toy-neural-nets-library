@@ -80,6 +80,8 @@ public class Layer {
             output[i] = perceptronOutput;
         }
 
+        this.
+
         return output;
     }
 
@@ -128,6 +130,9 @@ public class Layer {
         for (int i = 0; i < perceptrons.length; i++){
             perceptrons[i].setName(name + " - " + i);
         }
+    }
+
+    private double[] applyActivationFn(double[] perceptronOutputs) {
     }
 
     public int getWeightsNumber() {return this.weightsNumber;}

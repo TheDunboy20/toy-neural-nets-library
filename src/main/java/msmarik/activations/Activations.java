@@ -1,9 +1,6 @@
 package msmarik.activations;
 
-import msmarik.activations.functions.Linear;
-import msmarik.activations.functions.Relu;
-import msmarik.activations.functions.Sigmoid;
-import msmarik.activations.functions.Tanh;
+import msmarik.activations.functions.*;
 
 public class Activations {
     public static Activation relu() {
@@ -13,6 +10,8 @@ public class Activations {
     public static Activation linear() {
         return new Linear();
     }
+
+    public static Activation softmax() {return new Softmax();}
 
     public static Activation sigmoid() {
         return new Sigmoid();

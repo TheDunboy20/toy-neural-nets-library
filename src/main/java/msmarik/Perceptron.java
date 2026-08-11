@@ -13,7 +13,6 @@ public class Perceptron {
     private Initializer weightInitializer;
     private int weightsNumber;
     private int perceptronNumber;
-    private double result;
     private double outputBeforeActivation;
     private double errorSignal;
     private double[] lastInput;
@@ -60,12 +59,8 @@ public class Perceptron {
         result += bias;
 
         this.outputBeforeActivation = result;
-        result = activationFn.standard().applyAsDouble(result);
-
-        log.debug("[{}] Output after activation: {}", this.name, result);
 
         this.lastInput = input.clone();
-        this.result = result;
 
         return result;
     }
