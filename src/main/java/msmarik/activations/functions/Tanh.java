@@ -1,18 +1,17 @@
 package msmarik.activations.functions;
 
 import msmarik.activations.Activation;
-
-import java.util.function.DoubleUnaryOperator;
+import msmarik.activations.DoubleArrayUnaryOperator;
 
 public record Tanh() implements Activation {
 
     @Override
-    public DoubleUnaryOperator standard() {
-        return Math::tanh;
+    public DoubleArrayUnaryOperator standard() {
+        return elementwise(Math::tanh);
     }
 
     @Override
-    public DoubleUnaryOperator derivative() {
-        return x -> 1 - Math.pow(Math.tanh(x), 2);
+    public DoubleArrayUnaryOperator derivative() {
+        return elementwise(x -> 1 - Math.pow(Math.tanh(x), 2));
     }
 }

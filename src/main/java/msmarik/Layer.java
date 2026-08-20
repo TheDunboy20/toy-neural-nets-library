@@ -80,34 +80,51 @@ public class Layer {
             output[i] = perceptronOutput;
         }
 
-        this.
+        final double[] outputsAfterActivation = this.activationFn.standard().applyAsDoubleArray(output);
+        for (int i = 0; i < perceptrons.length; i++) {
+            perceptrons[i].setOutputAfterActivation(outputsAfterActivation[i]);
+        }
 
         return output;
     }
 
 
     public void backpropagateOutputLayer(double[] target, Loss lossFn) {
-
         final int outputCount = perceptrons.length;
+        double[] errors = new double[outputCount];
+
         for (int i = 0; i < outputCount; i++) {
             final Perceptron currentPerceptron = perceptrons[i];
-            double predictedProbability = currentPerceptron.getResult();
-            double error = lossFn.derivative(predictedProbability, target[i], outputCount);
-
-            currentPerceptron.updateErrorSignal(error);
+            double predictedProbability = currentPerceptron.getOutputAfterActivation();
+            errors[i] = lossFn.derivative(predictedProbability, target[i], outputCount);
         }
+
+        final double[] errorSignals = activationFn.derivative().applyAsDoubleArray(errors);
+
+        for (int i =0; i < outputCount; i++) {
+            perceptrons[i].setErrorSignal(errorSignals[i]);
+        }
+
     }
 
     public void backpropagateHiddenLayer(Layer nextLayer) {
+        double[] errors = new double[perceptrons.length];
+
         for (int i = 0; i < perceptrons.length; i++) {
-            Perceptron currentPerceptron = perceptrons[i];
             double errorFromPreviousLayer = 0;
 
             for (int j = 0; j < nextLayer.perceptrons.length; j++) {
                 Perceptron nextPerceptron = nextLayer.perceptrons[j];
                 errorFromPreviousLayer += nextPerceptron.getWeights()[i] * nextPerceptron.getErrorSignal();
             }
-            currentPerceptron.updateErrorSignal(errorFromPreviousLayer);
+
+            errors[i] = errorFromPreviousLayer;
+        }
+
+        double[] errorSignals = this.activationFn.derivative().applyAsDoubleArray(errors);
+
+        for (int i = 0; i < perceptrons.length; i++) {
+            perceptrons[i].setErrorSignal(errorSignals[i]);
         }
     }
 
@@ -130,9 +147,6 @@ public class Layer {
         for (int i = 0; i < perceptrons.length; i++){
             perceptrons[i].setName(name + " - " + i);
         }
-    }
-
-    private double[] applyActivationFn(double[] perceptronOutputs) {
     }
 
     public int getWeightsNumber() {return this.weightsNumber;}

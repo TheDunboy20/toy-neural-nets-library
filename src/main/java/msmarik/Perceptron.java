@@ -14,6 +14,7 @@ public class Perceptron {
     private int weightsNumber;
     private int perceptronNumber;
     private double outputBeforeActivation;
+    private double outputAfterActivation;
     private double errorSignal;
     private double[] lastInput;
     private String name;
@@ -65,13 +66,6 @@ public class Perceptron {
         return result;
     }
 
-    public void updateErrorSignal(double errorSignalFromPreviousLayer) {
-        log.debug("[{}] Error signal passed from previous layer: {}", this.name, errorSignalFromPreviousLayer);
-        this.errorSignal = errorSignalFromPreviousLayer
-                         * activationFn.derivative().applyAsDouble(outputBeforeActivation);
-        log.debug("[{}] Error signal updated to: {}", this.name, errorSignal);
-    }
-
     public void updateWeights(double learningRate) {
         for (int i = 0; i < weights.length; i++) {
             log.debug("{} Weight[{}] update parameters: LR={}, ErrorSignal={}, LastInput={},", this.name, i,
@@ -102,10 +96,6 @@ public class Perceptron {
         return errorSignal;
     }
 
-    public double getResult() {
-        return result;
-    }
-
     public double[] getLastInput() {
         return lastInput.clone();
     }
@@ -118,6 +108,8 @@ public class Perceptron {
         return this.bias;
     }
 
+    public double getOutputAfterActivation() { return this.outputAfterActivation; };
+
     private double initializeBias() {
         return Math.random() - 0.5;
     }
@@ -125,4 +117,9 @@ public class Perceptron {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setOutputAfterActivation(double outputAfterActivation) { this.outputAfterActivation = outputAfterActivation; };
+
+    public void setErrorSignal(double errorSignal) {this.errorSignal = errorSignal;}
+
 }

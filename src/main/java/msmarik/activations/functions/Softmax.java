@@ -3,8 +3,6 @@ package msmarik.activations.functions;
 import msmarik.activations.Activation;
 import msmarik.activations.DoubleArrayUnaryOperator;
 
-import java.util.function.DoubleUnaryOperator;
-
 public class Softmax implements Activation {
     @Override
     public DoubleArrayUnaryOperator standard() {
@@ -14,13 +12,17 @@ public class Softmax implements Activation {
                 rollingSum += Math.exp(element);
             }
             final double finalSum = rollingSum;
+            double[] result = new double[arr.length];
 
-            return elementwise(x -> (Math.exp(x)));
+            for (int i = 0; i < arr.length; i++) {
+                result[i] = Math.exp(arr[i]) / finalSum;
+            }
+            return result;
         };
     }
 
     @Override
-    public DoubleUnaryOperator derivative() {
-        return null;
+    public DoubleArrayUnaryOperator derivative() {
+        throw new UnsupportedOperationException("Softmax is a Jacobian matrix not a vector");
     }
 }
