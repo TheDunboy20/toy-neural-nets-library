@@ -85,24 +85,32 @@ public class Layer {
             perceptrons[i].setOutputAfterActivation(outputsAfterActivation[i]);
         }
 
-        return output;
+        return outputsAfterActivation;
     }
 
 
     public void backpropagateOutputLayer(double[] target, Loss lossFn) {
         final int outputCount = perceptrons.length;
-        double[] errors = new double[outputCount];
+
+        double[] upstreamGradients = new double[outputCount];
+        double[] outputsBeforeActivation = new double[outputCount];
 
         for (int i = 0; i < outputCount; i++) {
             final Perceptron currentPerceptron = perceptrons[i];
             double predictedProbability = currentPerceptron.getOutputAfterActivation();
-            errors[i] = lossFn.derivative(predictedProbability, target[i], outputCount);
+            outputsBeforeActivation[i] = currentPerceptron.getOutputBeforeActivation();
+            upstreamGradients[i] = lossFn.derivative(predictedProbability, target[i], outputCount);
         }
 
-        final double[] errorSignals = activationFn.derivative().applyAsDoubleArray(errors);
+        final double[] activationDerivatives = activationFn.derivative().applyAsDoubleArray(outputsBeforeActivation);
+
+        double [] gradientsWrtPreActivation = new double[outputCount];
+        for (int i = 0; i < outputCount; i++) {
+            gradientsWrtPreActivation[i] = upstreamGradients[i] * activationDerivatives[i];
+        }
 
         for (int i =0; i < outputCount; i++) {
-            perceptrons[i].setErrorSignal(errorSignals[i]);
+            perceptrons[i].setErrorSignal(gradientsWrtPreActivation[i]);
         }
 
     }

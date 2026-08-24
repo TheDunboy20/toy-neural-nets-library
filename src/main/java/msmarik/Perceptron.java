@@ -108,7 +108,9 @@ public class Perceptron {
         return this.bias;
     }
 
-    public double getOutputAfterActivation() { return this.outputAfterActivation; };
+    public double getOutputBeforeActivation() { return this.outputBeforeActivation; }
+
+    public double getOutputAfterActivation() { return this.outputAfterActivation; }
 
     private double initializeBias() {
         return Math.random() - 0.5;
@@ -118,7 +120,7 @@ public class Perceptron {
         this.name = name;
     }
 
-    public void setOutputAfterActivation(double outputAfterActivation) { this.outputAfterActivation = outputAfterActivation; };
+    public void setOutputAfterActivation(double outputAfterActivation) { this.outputAfterActivation = outputAfterActivation; }
 
     public void setErrorSignal(double errorSignal) {this.errorSignal = errorSignal;}
 
