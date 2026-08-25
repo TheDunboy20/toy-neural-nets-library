@@ -1,6 +1,7 @@
 package msmarik;
 
 import msmarik.activations.Activation;
+import msmarik.activations.Activations;
 import msmarik.initializers.Initializer;
 import msmarik.losses.Loss;
 
@@ -91,6 +92,11 @@ public class Layer {
 
     public void backpropagateOutputLayer(double[] target, Loss lossFn) {
         final int outputCount = perceptrons.length;
+        ///  Special path for Softmax function for now, simplified design which allows us to implement the error signal
+        ///  as p - y instead of constructing the Jacobian
+        if (activationFn.equals(Activations.softmax())) {
+
+        }
 
         double[] upstreamGradients = new double[outputCount];
         double[] outputsBeforeActivation = new double[outputCount];
@@ -112,7 +118,6 @@ public class Layer {
         for (int i =0; i < outputCount; i++) {
             perceptrons[i].setErrorSignal(gradientsWrtPreActivation[i]);
         }
-
     }
 
     public void backpropagateHiddenLayer(Layer nextLayer) {
