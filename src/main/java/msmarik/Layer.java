@@ -117,6 +117,7 @@ public class Layer {
 
     public void backpropagateHiddenLayer(Layer nextLayer) {
         double[] errors = new double[perceptrons.length];
+        double[] outputsBeforeActivations = new double[perceptrons.length];
 
         for (int i = 0; i < perceptrons.length; i++) {
             double errorFromPreviousLayer = 0;
@@ -126,13 +127,20 @@ public class Layer {
                 errorFromPreviousLayer += nextPerceptron.getWeights()[i] * nextPerceptron.getErrorSignal();
             }
 
+            outputsBeforeActivations[i] = perceptrons[i].getOutputBeforeActivation();
             errors[i] = errorFromPreviousLayer;
         }
 
-        double[] errorSignals = this.activationFn.derivative().applyAsDoubleArray(errors);
+        double[] activationDerivatives = this.activationFn.derivative().applyAsDoubleArray(outputsBeforeActivations);
+
+        double [] gradientsWrtPreActivation = new double[activationDerivatives.length];
+
+        for (int i = 0; i < activationDerivatives.length; i++) {
+            gradientsWrtPreActivation[i] = errors[i] * activationDerivatives[i];
+        }
 
         for (int i = 0; i < perceptrons.length; i++) {
-            perceptrons[i].setErrorSignal(errorSignals[i]);
+            perceptrons[i].setErrorSignal(gradientsWrtPreActivation[i]);
         }
     }
 
