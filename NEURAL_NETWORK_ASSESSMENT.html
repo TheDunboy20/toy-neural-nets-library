@@ -3,138 +3,509 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Toy Neural Nets Library — Technical Assessment</title>
+  <title>Toy Neural Nets Library — Completion Assessment</title>
   <style>
-    :root { color-scheme: light; --ink:#19212c; --muted:#5b6776; --line:#d9e1e8; --paper:#fff; --wash:#f4f8fb; --good:#16734d; --warn:#a75c00; --bad:#b32828; --blue:#185b96; }
+    :root {
+      color-scheme: light;
+      --ink: #17212b;
+      --muted: #5c6875;
+      --paper: #ffffff;
+      --wash: #f3f6f4;
+      --line: #d9e1dd;
+      --green: #176b52;
+      --green-soft: #e8f4ef;
+      --amber: #9a5a08;
+      --amber-soft: #fff4df;
+      --red: #a93636;
+      --red-soft: #fcecec;
+      --blue: #245d7d;
+      --blue-soft: #eaf3f8;
+      --slate: #354451;
+    }
+
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--wash); color: var(--ink); font: 16px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    main { max-width: 1040px; margin: 38px auto; padding: 0 24px 48px; }
-    article { background:var(--paper); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 10px 30px #23374a12; }
-    header { padding:42px 48px 32px; background:linear-gradient(125deg,#102b47,#1d5c8f); color:#fff; }
-    h1 { margin:0 0 8px; font-size:clamp(2rem,5vw,3.3rem); letter-spacing:-.045em; line-height:1.05; }
-    h2 { margin:38px 0 13px; font-size:1.45rem; letter-spacing:-.025em; }
-    h3 { margin:22px 0 8px; font-size:1.06rem; }
-    p { margin:10px 0; }
-    .subtitle { margin:0; max-width:760px; color:#dbeafa; font-size:1.1rem; }
-    .meta { margin-top:20px; font-size:.9rem; color:#c8def2; }
-    .content { padding:0 48px 42px; }
-    .verdict { margin:26px 0 6px; padding:20px 22px; border-left:5px solid var(--blue); border-radius:7px; background:#eef6fc; }
-    .verdict strong { font-size:1.1rem; }
-    table { width:100%; border-collapse:collapse; margin:14px 0; font-size:.96rem; }
-    th, td { padding:12px 10px; vertical-align:top; border-bottom:1px solid var(--line); text-align:left; }
-    th { color:var(--muted); font-weight:650; }
-    .score { white-space:nowrap; font-weight:800; }
-    .green { color:var(--good); } .amber { color:var(--warn); } .red { color:var(--bad); }
-    .meter { height:9px; width:112px; min-width:112px; overflow:hidden; border-radius:10px; background:#e4eaf0; }
-    .meter > span { display:block; height:100%; background:linear-gradient(90deg,#e18737,#1e8a62); }
-    ul, ol { padding-left:24px; } li { margin:7px 0; }
-    code { padding:1px 4px; border-radius:4px; background:#edf1f5; font-size:.9em; }
-    .finding { margin:12px 0; padding:15px 17px; border:1px solid var(--line); border-radius:9px; }
-    .finding p { margin:5px 0 0; color:#344150; }
-    .tag { display:inline-block; min-width:2.6em; padding:1px 7px; border-radius:999px; color:#fff; font-size:.75rem; font-weight:800; text-align:center; vertical-align:1px; }
-    .p0 { background:var(--bad); } .p1 { background:var(--warn); } .p2 { background:#587086; }
-    .evidence { color:var(--muted); font-size:.91rem; }
-    .path { padding:17px 19px; border-radius:9px; background:#fafbfc; border:1px solid var(--line); }
-    .footnote { margin-top:28px; color:var(--muted); font-size:.88rem; }
-    @media (max-width:640px) { main { margin:0; padding:0; } article { border:none; border-radius:0; } header,.content { padding-left:23px; padding-right:23px; } .meter { width:70px; min-width:70px; } table { font-size:.88rem; } th,td { padding:9px 5px; } }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 10% 0%, #dcece4 0, transparent 27rem),
+        var(--wash);
+      color: var(--ink);
+      font: 16px/1.58 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    main { max-width: 1120px; margin: 38px auto; padding: 0 24px 56px; }
+    article {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--paper);
+      box-shadow: 0 18px 55px #24342c14;
+    }
+
+    header {
+      padding: 48px 52px 40px;
+      background: linear-gradient(130deg, #173e35, #235f50 55%, #2d6d62);
+      color: #fff;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 0 0 11px;
+      font-size: clamp(2.15rem, 5.2vw, 3.7rem);
+      line-height: 1.03;
+      letter-spacing: -.048em;
+    }
+
+    h2 {
+      margin: 48px 0 14px;
+      font-size: 1.55rem;
+      line-height: 1.2;
+      letter-spacing: -.025em;
+    }
+
+    h3 { margin: 24px 0 8px; font-size: 1.08rem; }
+    p { margin: 10px 0; }
+    a { color: var(--blue); }
+    code {
+      padding: 1px 5px;
+      border-radius: 5px;
+      background: #edf1ef;
+      color: #263a34;
+      font: .9em/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .subtitle {
+      max-width: 800px;
+      margin: 0;
+      color: #d7eee7;
+      font-size: 1.12rem;
+    }
+
+    .meta { margin-top: 22px; color: #c4dfd7; font-size: .9rem; }
+    .content { padding: 0 52px 48px; }
+    .lede { font-size: 1.08rem; color: var(--slate); }
+    .muted, .evidence { color: var(--muted); }
+    .evidence { font-size: .91rem; }
+
+    .verdict {
+      margin: 28px 0 18px;
+      padding: 22px 24px;
+      border-left: 5px solid var(--green);
+      border-radius: 8px;
+      background: var(--green-soft);
+    }
+
+    .verdict strong { font-size: 1.13rem; }
+    .scope {
+      margin: 18px 0;
+      padding: 14px 17px;
+      border: 1px solid #bdd2df;
+      border-radius: 9px;
+      background: var(--blue-soft);
+      color: #294759;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .card {
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fbfcfb;
+    }
+
+    .card h3 { margin-top: 0; }
+    .stat {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--green);
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -.035em;
+    }
+
+    table {
+      width: 100%;
+      margin: 15px 0;
+      border-collapse: collapse;
+      font-size: .95rem;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th { color: var(--muted); font-weight: 700; }
+    .rating { white-space: nowrap; font-weight: 800; }
+    .good { color: var(--green); }
+    .warn { color: var(--amber); }
+    .bad { color: var(--red); }
+
+    ul, ol { padding-left: 24px; }
+    li { margin: 7px 0; }
+    .compact li { margin: 4px 0; }
+
+    .finding {
+      margin: 13px 0;
+      padding: 17px 18px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .finding p { margin: 6px 0 0; color: #35434e; }
+    .tag {
+      display: inline-block;
+      min-width: 2.7em;
+      margin-right: 5px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: .73rem;
+      font-weight: 850;
+      text-align: center;
+      vertical-align: 2px;
+    }
+
+    .p0 { background: var(--red); }
+    .p1 { background: var(--amber); }
+    .p2 { background: #60717e; }
+
+    .phase {
+      position: relative;
+      margin: 15px 0 15px 13px;
+      padding: 4px 0 20px 30px;
+      border-left: 2px solid #b8ccc4;
+    }
+
+    .phase:last-child { padding-bottom: 2px; }
+    .phase::before {
+      position: absolute;
+      top: 6px;
+      left: -10px;
+      width: 18px;
+      height: 18px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 0 1px #a9c2b8;
+      content: "";
+    }
+
+    .phase h3 { margin: 0 0 6px; }
+    .phase p { margin: 6px 0; }
+    .deliverable {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #edf3f0;
+      color: #355148;
+      font-size: .87rem;
+      font-weight: 700;
+    }
+
+    .architecture {
+      margin: 16px 0;
+      padding: 18px 20px;
+      border: 1px solid #cbd8d2;
+      border-radius: 10px;
+      background: #f8fbf9;
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 14px 0 7px;
+    }
+
+    .node {
+      padding: 8px 11px;
+      border: 1px solid #bad0c6;
+      border-radius: 8px;
+      background: #fff;
+      font-weight: 700;
+    }
+
+    .arrow { color: #719084; font-weight: 800; }
+    .checklist { list-style: none; padding-left: 0; }
+    .checklist li { position: relative; padding-left: 29px; }
+    .checklist li::before {
+      position: absolute;
+      left: 0;
+      top: 1px;
+      color: var(--green);
+      content: "□";
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .warning {
+      padding: 14px 17px;
+      border-left: 4px solid var(--amber);
+      border-radius: 7px;
+      background: var(--amber-soft);
+      color: #5d441e;
+    }
+
+    .footnote {
+      margin-top: 35px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .87rem;
+    }
+
+    @media (max-width: 720px) {
+      main { margin: 0; padding: 0; }
+      article { border: 0; border-radius: 0; }
+      header, .content { padding-left: 23px; padding-right: 23px; }
+      .grid { grid-template-columns: 1fr; }
+      table { font-size: .87rem; }
+      th, td { padding: 9px 6px; }
+      .hide-small { display: none; }
+    }
   </style>
 </head>
 <body>
 <main>
   <article>
     <header>
-      <h1>Toy Neural Nets Library</h1>
-      <p class="subtitle">Independent code review: usability, correctness, learning value, and the path to an MNIST-capable implementation.</p>
-      <p class="meta">Repository state reviewed 29 July 2026 · Java / Gradle · source and tests inspected; clean build executed</p>
+      <h1>Completion assessment and first real-training roadmap</h1>
+      <p class="subtitle">A repository-specific review of what already works, what still prevents a credible educational release, and the shortest route to a real binary-classification experiment.</p>
+      <p class="meta">Reviewed 26 August 2026 · Java / Gradle · all tracked source, tests, build files, history, README, and demo inspected</p>
     </header>
+
     <div class="content">
       <section>
         <h2>Bottom line</h2>
         <div class="verdict">
-          <strong>This is a promising educational MLP core, not yet an MNIST-ready library.</strong>
-          The repository correctly expresses the central idea of a dense neural network—weighted sums, activations, reverse error propagation, and parameter updates—and its small deterministic tests pass. It is roughly <strong>20–30% of the way to a minimal, reproducible MNIST learning project</strong>, and under <strong>10% of the way to a generally usable neural-network library</strong>. The remaining work is concentrated in a few foundational pieces rather than cosmetic features.
+          <strong>The mathematical core is viable; the project does not need a wholesale rewrite before it learns a real problem.</strong>
+          Dense forward propagation, nonlinear backpropagation, per-example SGD, shape checks, and an atomic <code>trainStep</code> are present. A focused numerical check matched finite differences to <strong>6.8 × 10<sup>−11</sup></strong>, and a deterministic XOR probe trained from loss <strong>0.745953 to 0.000507</strong> with <strong>4/4 correct predictions</strong>.
         </div>
-        <p>A handwritten training loop could technically feed MNIST pixels through the current API, using ten sigmoid outputs and one-hot targets. I would not call that a sound MNIST solution: there is no softmax/categorical cross-entropy, no dataset or epoch pipeline, no batching, and the current internal defensive copying makes a normal 784→hidden-layer network prohibitively allocation-heavy.</p>
+        <p class="lede">What is missing is mostly the engineering around that core: a reproducible random source, a green and portable build, stable edge-case math, a dataset/training/evaluation pipeline, end-to-end tests, a usable example, and removal of avoidable allocation hot spots. Those pieces are substantial, but they can be added incrementally around the current dense-layer design.</p>
+        <div class="scope"><strong>Scope boundary:</strong> the in-progress softmax/multiclass attempt was intentionally excluded from this assessment. It is not counted as a defect or a prerequisite. The recommended first real task uses one sigmoid output and binary cross-entropy, so no softmax work is needed.</div>
       </section>
 
       <section>
-        <h2>Scorecard</h2>
+        <h2>Evidence from the current repository</h2>
+        <div class="grid">
+          <div class="card"><span class="stat">13 / 14</span>Checked-in test methods pass when compiled and invoked directly. One assertion is stale after the mean-MSE gradient correction.</div>
+          <div class="card"><span class="stat">6.8e−11</span>Maximum absolute error in an independent finite-difference check of a <code>tanh → sigmoid → BCE</code> network.</div>
+          <div class="card"><span class="stat">4 / 4</span>XOR predictions correct after deterministic single-example training through the public <code>trainStep</code> API.</div>
+          <div class="card"><span class="stat">0</span>Checked-in datasets, epoch trainers, metrics, convergence tests, persistence mechanisms, or reproducible seeded initializers.</div>
+        </div>
+
         <table>
-          <thead><tr><th>Perspective</th><th>Rating</th><th></th><th>Assessment</th></tr></thead>
+          <thead><tr><th>Area</th><th>Rating</th><th class="hide-small">Why</th></tr></thead>
           <tbody>
-            <tr><td>Educational value</td><td class="score green">7 / 10</td><td><div class="meter"><span style="width:70%"></span></div></td><td>Small, readable classes make the forward and backward passes approachable.</td></tr>
-            <tr><td>Core scalar MLP correctness</td><td class="score amber">5 / 10</td><td><div class="meter"><span style="width:50%"></span></div></td><td>Basic linear-network calculations are tested; multi-output loss scaling and important combinations remain incorrect or unverified.</td></tr>
-            <tr><td>MNIST readiness</td><td class="score red">2 / 10</td><td><div class="meter"><span style="width:20%"></span></div></td><td>The required architecture can be described, but the training, data, multiclass, and performance foundations are absent.</td></tr>
-            <tr><td>Public API and safety</td><td class="score red">3 / 10</td><td><div class="meter"><span style="width:30%"></span></div></td><td>Useful primitives exist, but invalid network shapes and incorrect call order are not prevented.</td></tr>
-            <tr><td>Performance/scalability</td><td class="score red">1 / 10</td><td><div class="meter"><span style="width:10%"></span></div></td><td>Object-per-neuron design is fine for learning; repeated array cloning in backpropagation is a serious blocker for image data.</td></tr>
-            <tr><td>Tests and verification</td><td class="score amber">4 / 10</td><td><div class="meter"><span style="width:40%"></span></div></td><td>14 deterministic unit tests pass, but there is no finite-difference gradient check or end-to-end convergence test.</td></tr>
-            <tr><td>Documentation and onboarding</td><td class="score red">2 / 10</td><td><div class="meter"><span style="width:20%"></span></div></td><td>The README describes a different API and advertises categorical cross-entropy that the source does not implement.</td></tr>
-            <tr><td>Production suitability</td><td class="score red">1 / 10</td><td><div class="meter"><span style="width:10%"></span></div></td><td>No batching, serialization, reproducibility, metrics, error model, versioned API, or performance discipline.</td></tr>
-          </tbody>
-        </table>
-        <p class="evidence">Ratings are intentionally calibrated to the project’s stated “toy” purpose. A 7/10 for educational value does not mean the implementation is ready for real training workloads.</p>
-      </section>
-
-      <section>
-        <h2>What is already working</h2>
-        <ul>
-          <li>Dense layers, a builder, ReLU/sigmoid/tanh/linear activations, MSE/MAE/BCE losses, and He initialization are present.</li>
-          <li>The reverse pass calculates all error signals before parameters are updated, which is the right high-level ordering for per-example SGD.</li>
-          <li>The tests use fixed parameters to verify forward values, hidden/output error signals, and one update step. A clean <code>sh gradlew clean test</code> run succeeded: <strong>14 tests, 0 failures</strong>.</li>
-          <li>Explicitly parameterized layers make deterministic examples and future gradient checks straightforward.</li>
-        </ul>
-        <p>That is real progress. The project has moved beyond a collection of formulas: it has a coherent feed-forward computation graph and a working learning-step substrate for a small, single-example dense network.</p>
-      </section>
-
-      <section>
-        <h2>Material gaps and risks</h2>
-        <div class="finding"><strong><span class="tag p0">P0</span> No multiclass classification path.</strong><p>MNIST has ten mutually exclusive classes. There is no softmax activation and no categorical cross-entropy (CCE), despite the README listing CCE. Ten independent sigmoid+BCE outputs are a workaround, not the conventional or most stable formulation. Add a numerically stable logits→softmax→cross-entropy path with the fused gradient <code>p − y</code>.</p></div>
-        <div class="finding"><strong><span class="tag p0">P0</span> No training or data pipeline.</strong><p>The library exposes <code>forward</code>, <code>backpropagate</code>, and <code>updateWeightsAndBiases</code>, but has no <code>trainStep</code>, epochs, batches, shuffle, MNIST IDX reader, normalization, one-hot encoding, accuracy calculation, validation split, or example that learns anything. A user must invent the most error-prone workflow themselves.</p></div>
-        <div class="finding"><strong><span class="tag p0">P0</span> Backpropagation allocates far too much for MNIST.</strong><p><code>Layer.backpropagateHiddenLayer</code> calls <code>nextPerceptron.getWeights()</code> inside its inner loop. That getter clones the entire weight array. For just a 784→128 connection, backpropagating one preceding layer can clone roughly 784 × 128 arrays of length 784: about 630 MB of raw double payload per example, before array overhead. Preserve public immutability, but use an internal non-copying accessor or store parameters in contiguous matrices.</p></div>
-        <div class="finding"><strong><span class="tag p1">P1</span> Loss values and gradients disagree for multiple outputs.</strong><p>MSE and BCE report the mean loss across output elements, but their derivatives omit division by the output count. With one output the tests cannot reveal it; with ten MNIST outputs, the reported objective and applied gradient differ by a factor of ten. Either return a sum or scale the derivative consistently.</p></div>
-        <div class="finding"><strong><span class="tag p1">P1</span> Model structure is not validated end-to-end.</strong><p>Construction checks only that a loss exists and at least one layer was added. It does not check that each layer’s <code>weightsNumber</code> matches the previous layer’s output size, so malformed networks build and fail later during a forward pass. The input size is also not a property of <code>Net</code>.</p></div>
-        <div class="finding"><strong><span class="tag p1">P1</span> The lifecycle permits stale or missing gradients.</strong><p>Calling update twice after one backpropagation repeats an old gradient; calling backpropagation before forward can lead to null cached input during update. The existing sequential-update test explicitly accepts repeated stale-gradient updates. Offer one atomic <code>trainStep(input, target, learningRate)</code> first; keep lower-level operations only as advanced APIs with state checks.</p></div>
-        <div class="finding"><strong><span class="tag p1">P1</span> Experiments cannot be reproduced.</strong><p>He weights use <code>ThreadLocalRandom</code> and biases use <code>Math.random()</code>; neither accepts a seed. There is no model save/load. Learning results cannot be reliably compared or resumed.</p></div>
-        <div class="finding"><strong><span class="tag p2">P2</span> Design and hygiene issues.</strong><p>A <code>Layer</code> can claim one activation while its explicit perceptrons use another; getters expose mutable perceptron arrays; validation uses generic exceptions and one input error prints to standard output; and the build does not declare a Java toolchain/release even though <code>List.getLast()</code> requires Java 21+.</p></div>
-      </section>
-
-      <section>
-        <h2>Test coverage: what the green build means</h2>
-        <table>
-          <thead><tr><th>Verified</th><th>Not verified</th></tr></thead>
-          <tbody>
-            <tr><td>Hand-calculated linear forward pass; deterministic inference; weights unchanged by inference.</td><td>ReLU, sigmoid, and tanh gradient behavior; saturated numerical cases; BCE edge cases.</td></tr>
-            <tr><td>Hand-calculated error signals and weight updates in a small fixed network.</td><td>Finite-difference gradients for all parameters and losses; multi-output loss scaling.</td></tr>
-            <tr><td>Basic initialization lifecycle.</td><td>Invalid adjacent layer shapes, target sizes, null inputs, lifecycle misuse, or seeded repeatability.</td></tr>
-            <tr><td>Compilation and 14 JUnit tests pass on the reviewed environment.</td><td>Any end-to-end loss reduction, XOR learning, MNIST loading, training accuracy, speed, or memory use.</td></tr>
+            <tr><td>Dense-network math</td><td class="rating good">7 / 10</td><td class="hide-small">Normal-range nonlinear gradients are correct; important numerical and lifecycle edge cases remain.</td></tr>
+            <tr><td>Training usability</td><td class="rating warn">4 / 10</td><td class="hide-small"><code>trainStep</code> is a sound primitive, but callers must build epochs, shuffling, splits, preprocessing, and metrics.</td></tr>
+            <tr><td>Tests</td><td class="rating warn">5 / 10</td><td class="hide-small">Useful deterministic scalar tests exist; one now fails and there is no checked-in gradient or convergence test.</td></tr>
+            <tr><td>Reproducibility</td><td class="rating bad">1 / 10</td><td class="hide-small">Weights and biases use unrelated unseeded random sources; the experiment cannot be repeated exactly.</td></tr>
+            <tr><td>Data and evaluation</td><td class="rating bad">0 / 10</td><td class="hide-small">No dataset abstraction, loader, scaling, split, accuracy, confusion matrix, or validation loop.</td></tr>
+            <tr><td>Performance</td><td class="rating bad">3 / 10</td><td class="hide-small">Fine for small numeric data; cloning inside nested backpropagation loops makes wider models unnecessarily expensive.</td></tr>
+            <tr><td>Documentation/build</td><td class="rating bad">2 / 10</td><td class="hide-small">The README API is obsolete, advertised features differ from source, and the required Java level is undeclared.</td></tr>
           </tbody>
         </table>
       </section>
 
       <section>
-        <h2>Smallest credible MNIST milestone</h2>
-        <div class="path">
-          <ol>
-            <li><strong>Make the core trustworthy.</strong> Define an input size; validate every adjacent shape and target; make one safe <code>trainStep</code>; correct mean-loss gradients; add numerical-gradient and XOR/convergence tests.</li>
-            <li><strong>Add the MNIST objective.</strong> Implement stable softmax plus categorical cross-entropy, one-hot labels, argmax, and accuracy. Keep logits separate from activation values where useful.</li>
-            <li><strong>Make it feasible.</strong> Replace per-perceptron copying in the hot path with matrix/array operations or at least internal direct reads; accumulate and average mini-batch gradients instead of mutating on every example.</li>
-            <li><strong>Deliver a reproducible example.</strong> Add an IDX reader, [0,1] pixel normalization, deterministic seed, train/test reporting, and a runnable 784→128→10 example that records epoch loss and accuracy.</li>
-            <li><strong>Then broaden the library.</strong> Add Xavier initialization (for tanh/sigmoid), optimizers, model persistence, regularization, progress callbacks, documentation, and CI. Do these after the MNIST baseline is proven.</li>
-          </ol>
-        </div>
-        <p>Success criterion for that milestone: a clean checkout can run one documented command, train deterministically, show steadily decreasing training loss, and report held-out MNIST accuracy. A small dense baseline should be judged first for correctness and reproducibility—not for matching modern CNN performance.</p>
+        <h2>What is already worth keeping</h2>
+        <ul>
+          <li><strong>A small, understandable object model.</strong> <code>Net → Layer → Perceptron</code> makes the dense forward and backward passes easy to trace—valuable for an educational library.</li>
+          <li><strong>Network construction and basic shape safety.</strong> The builder checks adjacent layer dimensions and the network validates training input/target dimensions.</li>
+          <li><strong>Atomic single-example learning.</strong> <code>trainStep(input, target, learningRate)</code> performs forward, loss, backward, and update in the correct high-level order.</li>
+          <li><strong>Correct mean-loss scaling.</strong> MSE, MAE, and BCE derivatives divide by output count consistently with their reported mean loss.</li>
+          <li><strong>Useful deterministic parameter constructors.</strong> Explicit weights and biases make hand calculations, gradient checks, loading, and reproducible tests possible.</li>
+          <li><strong>A proven nonlinear path.</strong> The focused gradient and XOR probes show that <code>tanh</code>, <code>sigmoid</code>, BCE, hidden-layer error propagation, bias updates, and repeated <code>trainStep</code> calls work together in normal numeric ranges.</li>
+        </ul>
+        <p>This is enough of a foundation to finish a deliberately scoped dense-network library. GPU support, automatic differentiation, convolutional layers, and a general tensor engine are not required for an educational v1.</p>
       </section>
 
       <section>
-        <h2>Repository-specific documentation corrections</h2>
-        <ul>
-          <li>The README sample no longer compiles: it uses <code>new Net(Losses.MSE(), 0.001)</code> and <code>net.addLayer(...)</code>, while the current source uses <code>new Net.Builder()</code>.</li>
-          <li>The README claims categorical cross-entropy, but <code>Losses</code> exposes only BCE, MAE, and MSE.</li>
-          <li>The README should state that the current API is single-example SGD primitives, rather than suggesting a complete training mechanism.</li>
+        <h2>What still needs to be done</h2>
+
+        <div class="finding">
+          <strong><span class="tag p0">P0</span> Restore a trustworthy, portable green build.</strong>
+          <p><code>BackpropagationTest.multiLabelOutputLayerBackprop</code> expects <code>-1/+1</code>, but mean MSE over two outputs correctly produces <code>-0.5/+0.5</code>. Update that stale expectation. Then declare a Java toolchain/release: the source uses <code>List.getFirst/getLast</code> (Java 21+), while <code>build.gradle</code> declares no language level. Upgrade the Gradle wrapper to a version compatible with the supported runtime and add CI for the chosen JDK.</p>
+        </div>
+
+        <div class="finding">
+          <strong><span class="tag p0">P0</span> Make experiments reproducible.</strong>
+          <p>He initialization uses <code>ThreadLocalRandom</code>; biases are lazily created with <code>Math.random()</code> on the first forward pass. Introduce one injected <code>RandomGenerator</code> or seed owned by the network/build configuration. Initialize all parameters during <code>build()</code>, preferably with zero biases initially. A model built twice with the same seed, structure, and data order must produce the same metrics.</p>
+        </div>
+
+        <div class="finding">
+          <strong><span class="tag p0">P0</span> Check in gradient and convergence tests.</strong>
+          <p>The current hand-calculated tests cover only linear activations for the main backpropagation assertions. Add central finite-difference checks for every weight and bias in small nonlinear networks, covering supported activation/loss pairings. Add deterministic “loss decreases” tests for linear regression and XOR. These tests should fail loudly on non-finite values and will protect the core while trainer code is added.</p>
+        </div>
+
+        <div class="finding">
+          <strong><span class="tag p0">P0</span> Stabilize sigmoid/BCE and validate numeric inputs.</strong>
+          <p>The sigmoid derivative computes an exponential quotient that returns <code>NaN</code> for a pre-activation of <code>-1000</code>. Compute sigmoid stably and derive it as <code>s × (1 − s)</code>; for a sigmoid+BCE output, a fused error signal <code>(prediction − target) / outputCount</code> avoids an unstable multiply/divide pair. Reject non-finite features, targets, learning rates, losses, and gradients with a useful message; validate BCE labels as binary or within <code>[0,1]</code>.</p>
+        </div>
+
+        <div class="finding">
+          <strong><span class="tag p0">P0</span> Add the missing training/data/evaluation layer.</strong>
+          <p>The library has one training step, not a training workflow. Add a small <code>DataSet</code> abstraction, deterministic train/validation splitting, feature standardization fitted only on training data, seeded shuffling, an epoch loop, and mean-loss plus binary-accuracy reporting. Start with per-example SGD; mini-batches are not necessary for the first small dataset.</p>
+        </div>
+
+        <div class="finding">
+          <strong><span class="tag p1">P1</span> Stop cloning parameters inside hot loops.</strong>
+          <p><code>Layer.backpropagateHiddenLayer</code> calls <code>nextPerceptron.getWeights()</code> inside both neuron loops, and that getter clones the full weight vector. This changes the backward pass from the expected parameter-sized work to roughly <code>O(currentWidth² × nextWidth)</code> copied doubles. Each perceptron also clones the same layer input into its own <code>lastInput</code>. Keep defensive public getters, but add internal direct indexed reads and cache one input per layer—or move layer parameters to a matrix once clarity permits.</p>
+        </div>
+
+        <div class="finding">
+          <strong><span class="tag p1">P1</span> Tighten lifecycle and ownership boundaries.</strong>
+          <p>The low-level public sequence allows updating twice from stale gradients; an existing test explicitly accepts that behavior. Updating before a forward pass fails through a null cached input. Prefer <code>trainStep</code> as the safe public mutation API, clear/consume gradient state after an update, and either make advanced methods package-private or guard their order. Return a cloned perceptron array from <code>Layer.getPerceptrons()</code> so callers cannot replace internal neurons.</p>
+        </div>
+
+        <div class="finding">
+          <strong><span class="tag p1">P1</span> Supply initialization appropriate to supported activations.</strong>
+          <p>He initialization is a reasonable ReLU default but is the only initializer. Add Xavier/Glorot for <code>tanh</code> and sigmoid networks, plus a fixed/constant initializer for tests. Validate initializer arguments and document recommended activation/initializer combinations.</p>
+        </div>
+
+        <div class="finding">
+          <strong><span class="tag p1">P1</span> Replace the demo and repair the README.</strong>
+          <p>The README example uses removed constructors/methods and does not compile against the builder API. It also advertises categorical cross-entropy that <code>Losses</code> does not provide. The current demo performs only a random forward pass. Replace both with one verified command that trains, reports validation metrics, and predicts a few held-out examples.</p>
+        </div>
+
+        <div class="finding">
+          <strong><span class="tag p2">P2</span> Add mini-batches, optimizers, and persistence after the baseline works.</strong>
+          <p>Once the first dataset trains correctly, separate gradient accumulation from parameter updates, average a mini-batch, and introduce an <code>Optimizer</code> boundary (SGD first, momentum/Adam later). Add a versioned model format containing layer shapes, activation identifiers, weights, biases, and preprocessing parameters. These are v1 completion items, but they should not delay the first real experiment.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Recommended first real problem</h2>
+        <div class="architecture">
+          <h3>Wisconsin Diagnostic Breast Cancer: numeric binary classification</h3>
+          <p>Use this as an educational benchmark, not a medical system. It is a good fit for the library because the features are numeric, the dataset is small enough for the current scalar implementation, and the target is binary—so the unfinished multiclass path is irrelevant.</p>
+          <div class="flow" aria-label="Suggested network architecture">
+            <span class="node">30 standardized inputs</span><span class="arrow">→</span>
+            <span class="node">16 ReLU</span><span class="arrow">→</span>
+            <span class="node">8 ReLU</span><span class="arrow">→</span>
+            <span class="node">1 sigmoid</span><span class="arrow">→</span>
+            <span class="node">BCE</span>
+          </div>
+          <p class="evidence">Start simpler if useful: logistic regression (<code>30 → 1 sigmoid</code>) is an excellent pipeline baseline. The neural network should then beat or at least clearly improve upon a majority-class baseline on held-out data. Record the split seed and all hyperparameters.</p>
+        </div>
+
+        <h3>Minimum experiment pipeline</h3>
+        <ol>
+          <li>Load numeric rows and a binary label; report row count, feature count, and class balance.</li>
+          <li>Perform a seeded, preferably stratified, train/validation split.</li>
+          <li>Fit mean and standard deviation on training features only; transform both partitions with those training statistics.</li>
+          <li>Build the network with a fixed seed and zero biases; use He weights for the ReLU layers.</li>
+          <li>Shuffle training row indices from the same controlled random source each epoch and call <code>trainStep</code>.</li>
+          <li>After every epoch, compute mean training loss, validation loss, binary accuracy, and a confusion matrix without updating parameters.</li>
+          <li>Keep the best validation checkpoint or at least restore/report the best epoch, then print a few held-out predictions.</li>
+        </ol>
+
+        <div class="warning"><strong>Avoid data leakage:</strong> never standardize using the full dataset before splitting. The scaler is model state and must be fitted only from the training partition, then saved alongside the network.</div>
+      </section>
+
+      <section>
+        <h2>Implementation roadmap</h2>
+
+        <div class="phase">
+          <h3>Phase 0 — Lock down the core</h3>
+          <p>Fix the one stale test, declare/upgrade the build toolchain, add nonlinear finite-difference tests, add deterministic XOR and linear-regression convergence tests, and add non-finite guards.</p>
+          <span class="deliverable">Exit: one clean command passes on a fresh checkout and CI</span>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 1 — Reproducible, stable learning</h3>
+          <p>Inject a seed/random source, initialize biases during construction, add stable sigmoid and sigmoid+BCE handling, add Xavier and constant initializers, and test identical-seed behavior.</p>
+          <span class="deliverable">Exit: repeated runs produce identical losses and parameters</span>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 2 — Dataset and trainer</h3>
+          <p>Add <code>DataSet</code>, a simple CSV loader, <code>StandardScaler</code>, deterministic/stratified split and shuffle utilities, <code>Trainer</code>, <code>TrainingConfig</code>, and epoch metrics. Keep storage as primitive arrays and SGD as the only optimizer initially.</p>
+          <span class="deliverable">Exit: any numeric binary CSV can be trained without a handwritten loop</span>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 3 — First real result</h3>
+          <p>Add the breast-cancer example, dataset acquisition instructions or a small checked-in fixture, baseline comparison, validation reporting, and reproducible output in the README. Tune only after correctness is visible.</p>
+          <span class="deliverable">Exit: one documented command trains and reports held-out metrics</span>
+        </div>
+
+        <div class="phase">
+          <h3>Phase 4 — Scale and release</h3>
+          <p>Remove hot-path cloning, introduce gradient accumulation and mini-batch SGD, add model/scaler persistence, make the API ownership-safe, publish Javadocs, and tag a deliberately scoped <code>0.1.0</code> release.</p>
+          <span class="deliverable">Exit: a saved model reloads with identical predictions</span>
+        </div>
+
+        <div class="phase">
+          <h3>Later — Broaden only when a use case demands it</h3>
+          <p>Add momentum/Adam, regularization, early stopping, multiclass output, and larger image examples one at a time with gradient and convergence coverage. Convolutions, tensors, GPU execution, and autodiff are separate projects—not prerequisites for finishing this dense educational library.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Suggested small API surface</h2>
+        <table>
+          <thead><tr><th>Component</th><th>Responsibility</th><th>Avoid</th></tr></thead>
+          <tbody>
+            <tr><td><code>DataSet</code></td><td>Own feature/label arrays; expose row and shape access.</td><td>File parsing, scaling, or network logic.</td></tr>
+            <tr><td><code>DataSplit</code></td><td>Seeded train/validation partition, optionally stratified.</td><td>Mutating the source dataset.</td></tr>
+            <tr><td><code>StandardScaler</code></td><td><code>fit</code>, <code>transform</code>, save/load statistics.</td><td>Fitting on validation data.</td></tr>
+            <tr><td><code>Trainer</code></td><td>Epochs, shuffle, calls to <code>trainStep</code>, callbacks/metrics.</td><td>Owning network math.</td></tr>
+            <tr><td><code>TrainingConfig</code></td><td>Epochs, learning rate, seed, reporting cadence.</td><td>Global mutable configuration.</td></tr>
+            <tr><td><code>BinaryMetrics</code></td><td>Mean loss, threshold accuracy, confusion counts.</td><td>Parameter updates.</td></tr>
+            <tr><td><code>ModelIO</code></td><td>Versioned architecture, parameters, and scaler state.</td><td>Java object serialization tied to class internals.</td></tr>
+          </tbody>
+        </table>
+        <p>Keep the current <code>Net</code>, <code>Layer</code>, and <code>Perceptron</code> names while the library is educational. A matrix-backed <code>DenseLayer</code> can replace or sit behind them later without forcing the training/data API to change.</p>
+      </section>
+
+      <section>
+        <h2>Definition of “finished” for version 0.1</h2>
+        <ul class="checklist">
+          <li>A fresh checkout builds and tests with one documented Gradle command on the declared JDK.</li>
+          <li>All supported activation/loss combinations have finite-difference coverage at weights and biases.</li>
+          <li>Fixed seed + fixed data order gives identical initialization, epoch metrics, and final predictions.</li>
+          <li>Invalid shapes, non-finite values, invalid labels, and incorrect training lifecycle calls fail clearly.</li>
+          <li>A generic numeric binary dataset can be split, standardized, trained, and evaluated through library APIs.</li>
+          <li>The real example reports training and validation loss, class balance, accuracy, confusion counts, and hyperparameters.</li>
+          <li>The real example beats the recorded majority baseline and shows no unexplained <code>NaN</code>/infinite values.</li>
+          <li>A saved model plus scaler reloads with predictions equal within a documented tolerance.</li>
+          <li>The README compiles, matches the source, states the supported scope, and does not advertise unfinished features.</li>
+          <li>No public operation silently reuses stale gradients or exposes replaceable internal arrays.</li>
         </ul>
       </section>
 
-      <p class="footnote">Scope: static review of all main/test Java sources, README/build configuration, and a clean Gradle test/build. No MNIST data was downloaded or trained; therefore performance and accuracy claims are deliberately not invented. Existing unrelated worktree change to <code>.gitignore</code> was not modified.</p>
+      <section>
+        <h2>Verification notes</h2>
+        <table>
+          <thead><tr><th>Check</th><th>Result</th><th>Interpretation</th></tr></thead>
+          <tbody>
+            <tr><td>Compile all production and test sources with <code>javac</code></td><td class="good"><strong>Pass</strong></td><td>The current source compiles on Java 25 when dependencies are supplied directly.</td></tr>
+            <tr><td>Invoke all 14 checked-in test methods</td><td class="warn"><strong>13 pass, 1 fails</strong></td><td>The failure is a stale expected value after correct mean-loss scaling, not evidence that current scaling is wrong.</td></tr>
+            <tr><td>Central finite-difference network gradient</td><td class="good"><strong>6.8e−11 max error</strong></td><td>Normal-range nonlinear forward/backward math is internally consistent for the tested <code>tanh/sigmoid/BCE</code> path.</td></tr>
+            <tr><td>Deterministic XOR convergence probe</td><td class="good"><strong>4/4; loss 0.745953 → 0.000507</strong></td><td>The public single-example training path can learn a nonlinear boundary with controlled explicit initialization.</td></tr>
+            <tr><td>Extreme sigmoid derivative at <code>-1000</code></td><td class="bad"><strong>NaN</strong></td><td>Numerical stability must be fixed before untrusted or poorly scaled real data.</td></tr>
+            <tr><td>Gradle verification in this workspace</td><td class="warn"><strong>Environment/build mismatch</strong></td><td>A pre-existing root-owned <code>build/</code> blocked cleanup; an isolated attempt then exposed Gradle 8.5 incompatibility with the default Java 25 runtime. This reinforces the missing toolchain/wrapper declaration.</td></tr>
+          </tbody>
+        </table>
+        <p class="evidence">The finite-difference and XOR probes were temporary review harnesses and were not added to the repository. Their checked-in equivalents belong in Phase 0. No external dataset was downloaded or trained during this assessment, so no real-dataset accuracy is claimed.</p>
+      </section>
+
+      <p class="footnote">This document supersedes the earlier checked-in assessment, whose findings predated the builder, adjacent-layer validation, <code>trainStep</code>, corrected mean-loss gradients, and the current activation refactor. Review scope intentionally excludes the unfinished softmax implementation.</p>
     </div>
   </article>
 </main>
